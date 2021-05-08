@@ -67,19 +67,19 @@ public class GameManager : MonoBehaviour
     public void FinishLevel(GameObject obj)
     {
         finishLevel.SetBool("isFinish", true);
-        StartCoroutine(ClosedDoor(5, obj));
+        StartCoroutine(ClosedDoor(2.5f, obj));
+       
     }
 
     public void StartAgainButton()
     {
        // Debug.Log("clicked");
-        SceneManager.LoadScene("2d_wizard_game");
+        SceneManager.LoadScene("Level_"+ UIManager.Instance.CurrentLevel);
     }
 
     public void SettingsButton()
     {
         ResetSettingsButton();
-       
     }
 
     public void ResetSettingsButton()
@@ -101,7 +101,7 @@ public class GameManager : MonoBehaviour
 
     public void ReplayButton()
     {
-        SceneManager.LoadScene("2d_wizard_game");
+        SceneManager.LoadScene("Level_" + UIManager.Instance.CurrentLevel);
     }
 
     public void PauseButton()
@@ -119,7 +119,13 @@ public class GameManager : MonoBehaviour
 
     public void NextLevel()
     {
+        UIManager.Instance.CurrentLevel += 1;
+        SceneManager.LoadScene("Level_" + UIManager.Instance.CurrentLevel);
+    }
 
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 
     public void HelpButton()
@@ -132,9 +138,10 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ClosedDoor(float waitTime,GameObject obj)
     {
-        yield return new WaitForSeconds(waitTime);
         obj.transform.GetChild(0).gameObject.SetActive(true);
+        yield return new WaitForSeconds(waitTime);
         obj.transform.GetChild(1).gameObject.SetActive(false);
+        movement.Destroy(movement.Instance.gameObject);
         uıPanel.gameObject.SetActive(true);
         uıPanel.transform.GetChild(2).gameObject.SetActive(true);
         confetti.gameObject.SetActive(true);
