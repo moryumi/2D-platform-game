@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public GameObject oyuncak;
     private bool hey=false,pause=false;
     public Animator startAnim, oyuncakSalınım,finishLevel;
+    public ParticleSystem confetti;
     //public GameObject Door;
 
     // public AnimationCurve zCurve, yCurve;
@@ -116,6 +117,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void NextLevel()
+    {
+
+    }
+
     public void HelpButton()
     {
         settingsPanel.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
@@ -129,6 +135,10 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
         obj.transform.GetChild(0).gameObject.SetActive(true);
         obj.transform.GetChild(1).gameObject.SetActive(false);
+        uıPanel.gameObject.SetActive(true);
+        uıPanel.transform.GetChild(2).gameObject.SetActive(true);
+        confetti.gameObject.SetActive(true);
+        confetti.Play();
     }
 
 }
