@@ -19,11 +19,13 @@ public class UIManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance == null)
-        {
+        if (Instance != null) {
+            Destroy (UIManager.Instance);
+        } else {
             Instance = this;
+            DontDestroyOnLoad (UIManager.Instance);
         }
-
+       
         for (int i = 0; i < 15; i++)
         {
             TagHelper.AddTag("Level" + (i + 1));            //SpriteList loopunda çalışmadı?
@@ -56,11 +58,46 @@ public class UIManager : MonoBehaviour
             buttonList[x].gameObject.tag ="Level"+(x+1);
         }
         buttonList[0].transform.GetChild(0).gameObject.SetActive(false);
+
+        Debug.Log("awake");
+
+        if (PlayerPrefs.GetInt("pref")==0)
+        {
+            for (int i = 0; i < UIManager.Instance.currentLevel; i++)
+            {
+                buttonList[i].transform.GetChild(0).gameObject.SetActive(false);
+            }
+
+            for (int i = 0; i < (UIManager.Instance.currentLevel - 1); i++)
+            {
+                buttonList[i].interactable = false;
+            }
+        }
+        else
+        {
+            for (int i = 0; i < PlayerPrefs.GetInt("pref"); i++)
+            {
+                buttonList[i].transform.GetChild(0).gameObject.SetActive(false);
+            }
+
+            for (int i = 0; i < (PlayerPrefs.GetInt("pref") - 1); i++)
+            {
+                buttonList[i].interactable = false;
+            }
+        }
     }
 
     void Update()
     {
-       
+        if (PlayerPrefs.HasKey("pref"))
+        {
+            PlayerPrefs.SetInt("pref", UIManager.Instance.currentLevel);
+            PlayerPrefs.Save();
+        }
+        else
+            Debug.Log("yok");
+
+        Debug.Log("prefupdate"+ PlayerPrefs.GetInt("pref"));
     }
 
     public void LevelButtonClick(Button btn)
@@ -71,8 +108,20 @@ public class UIManager : MonoBehaviour
             {
                 //Debug.Log("tıkladı "+(i + 1));
                 SceneManager.LoadScene("Level_"+(i+1));
+                gameObject.SetActive(false);
                 currentLevel = i + 1;
             }
         }
     }
+
+    public void CurrentLevelSetter()
+    {
+        UIManager.Instance.CurrentLevel += 1;
+    }
+
+    private void OnApplicationQuit()
+    {
+       
+    }
+
 }

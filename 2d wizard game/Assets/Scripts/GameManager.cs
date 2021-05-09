@@ -68,8 +68,11 @@ public class GameManager : MonoBehaviour
     {
         finishLevel.SetBool("isFinish", true);
         StartCoroutine(ClosedDoor(2.5f, obj));
-       
+        UIManager.Instance.CurrentLevelSetter();
+        Debug.Log("cur"+ UIManager.Instance.CurrentLevel);
     }
+
+    
 
     public void StartAgainButton()
     {
@@ -119,7 +122,6 @@ public class GameManager : MonoBehaviour
 
     public void NextLevel()
     {
-        UIManager.Instance.CurrentLevel += 1;
         SceneManager.LoadScene("Level_" + UIManager.Instance.CurrentLevel);
     }
 
