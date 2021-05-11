@@ -59,7 +59,7 @@ public class UIManager : MonoBehaviour
         }
         buttonList[0].transform.GetChild(0).gameObject.SetActive(false);
 
-        Debug.Log("awake");
+      //  Debug.Log("awake");
 
         if (PlayerPrefs.GetInt("pref")==0)
         {
@@ -94,10 +94,10 @@ public class UIManager : MonoBehaviour
             PlayerPrefs.SetInt("pref", UIManager.Instance.currentLevel);
             PlayerPrefs.Save();
         }
-        else
-            Debug.Log("yok");
+        
+          //  Debug.Log("yok");
 
-        Debug.Log("prefupdate"+ PlayerPrefs.GetInt("pref"));
+       // Debug.Log("prefupdate"+ PlayerPrefs.GetInt("pref"));
     }
 
     public void LevelButtonClick(Button btn)

@@ -11,12 +11,20 @@ public class GameManager : MonoBehaviour
 
     public GameObject uıPanel,gameOverPanel,settingsPanel;
     public Button startButton;
-    //public GameObject character;
     public GameObject oyuncak;
     private bool hey=false,pause=false;
     public Animator startAnim, oyuncakSalınım,finishLevel;
     public ParticleSystem confetti;
-    //public GameObject Door;
+    [SerializeField]
+    private GameObject spawnPoint;
+    public GameObject rainDrop;
+    public List<GameObject> rainDropList;
+    [SerializeField]
+    private int poolNum;
+    [SerializeField]
+    private float rainSpeed,waitTime,loopTime;
+    private bool ok;
+    
 
     // public AnimationCurve zCurve, yCurve;
     //[Range(0,100)] 
@@ -26,23 +34,39 @@ public class GameManager : MonoBehaviour
     {
         gameOverPanel = uıPanel.transform.GetChild(0).gameObject;
         settingsPanel = uıPanel.transform.GetChild(1).gameObject;
-
+        
     }
     void Start()
     {
+        rainDropList.Add(rainDrop);
         
         Time.timeScale = 1;
         if (Instance==null)
         {
             Instance = this;
         }
-        //startAnim.updateMode = AnimatorUpdateMode.UnscaledTime;
-
         uıPanel.gameObject.SetActive(false);
         gameOverPanel.SetActive(false);
         settingsPanel.SetActive(false);
         startButton.onClick.AddListener(StartAgainButton);
         oyuncakSalınım.SetBool("isOyuncakSalınım", true);
+
+        for (int i = 0; i < poolNum; i++)
+        {
+            var currentRainDrop=Instantiate(rainDrop, new Vector3(Random.RandomRange(spawnPoint.transform.position.x - 2.5f, spawnPoint.transform.position.x + 2.5f) , spawnPoint.transform.position.y), rainDrop.transform.rotation);
+            currentRainDrop.SetActive(false);
+            currentRainDrop.transform.parent = rainDrop.transform.parent;
+            rainDropList.Add(currentRainDrop);
+        }
+
+        for (int i = 0; i < rainDropList.Count; i++)
+        {
+            var currentRainDrop = rainDropList[i];
+            currentRainDrop.GetComponent<Rigidbody2D>().gravityScale = Random.RandomRange(0.1f,2);
+            currentRainDrop.SetActive(false);
+            
+        }
+
     }
 
     private void FixedUpdate()
@@ -53,7 +77,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-       // Debug.Log(finishLevel.GetCurrentAnimatorStateInfo(0).length);
+       // Debug.Log("ok "+ok);
     }
 
     public void GameOver()
@@ -69,10 +93,8 @@ public class GameManager : MonoBehaviour
         finishLevel.SetBool("isFinish", true);
         StartCoroutine(ClosedDoor(2.5f, obj));
         UIManager.Instance.CurrentLevelSetter();
-        Debug.Log("cur"+ UIManager.Instance.CurrentLevel);
+       // Debug.Log("cur"+ UIManager.Instance.CurrentLevel);
     }
-
-    
 
     public void StartAgainButton()
     {
@@ -140,8 +162,8 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ClosedDoor(float waitTime,GameObject obj)
     {
-        obj.transform.GetChild(0).gameObject.SetActive(true);
         yield return new WaitForSeconds(waitTime);
+        obj.transform.GetChild(0).gameObject.SetActive(true);
         obj.transform.GetChild(1).gameObject.SetActive(false);
         movement.Destroy(movement.Instance.gameObject);
         uıPanel.gameObject.SetActive(true);
@@ -150,4 +172,26 @@ public class GameManager : MonoBehaviour
         confetti.Play();
     }
 
+    public void Rain()
+    {
+        GameObject rain_ = GetRainDrop();
+        if (rain_!=null)
+        {
+            rain_.transform.position = new Vector3(Random.RandomRange(spawnPoint.transform.position.x - 2.5f, spawnPoint.transform.position.x + 2.5f), spawnPoint.transform.position.y);
+            rain_.SetActive(true);
+        }
+    }
+
+    public GameObject GetRainDrop()
+    {
+        for (int i = 0; i < rainDropList.Count; i++)
+        {
+            var currentLevel = rainDropList[i];
+            if (!currentLevel.activeInHierarchy)
+            {
+                return currentLevel;
+            }
+        }
+        return null;
+    }
 }

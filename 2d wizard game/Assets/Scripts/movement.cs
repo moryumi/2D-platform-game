@@ -78,7 +78,7 @@ public class movement : MonoBehaviour
             gameObject.transform.SetParent(collision.transform.parent);
             
         }
-        else if (collision.gameObject.tag == "testere" || collision.gameObject.tag == "diken")
+        else if (collision.gameObject.tag == "testere" || collision.gameObject.tag == "diken" || collision.gameObject.tag == "rain_drop")
         {
             dead = true;
             GameManager.Instance.GameOver();
@@ -91,6 +91,8 @@ public class movement : MonoBehaviour
             finish = true;
             GameManager.Instance.FinishLevel(collision.gameObject);
         }
+       
+
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -107,7 +109,24 @@ public class movement : MonoBehaviour
         }
         
     }
-
+   
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "rain")
+        {
+            GameManager.Instance.Rain();
+        }
+       
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "rain_drop")
+        {
+            dead = true;
+            GameManager.Instance.GameOver();
+            GameOverForce();
+        }
+    }
     public void GameOverForce()
     {
         rb.AddForce(new Vector2(-.5f,10) * Time.deltaTime * force);
