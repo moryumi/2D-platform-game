@@ -7,7 +7,7 @@ public class movement : MonoBehaviour
 {
 
     public Rigidbody2D rb;
-    private BoxCollider2D boxCollider;
+    private PolygonCollider2D boxCollider;
     private bool collideWithGround;
     private bool dead,finish;
     public Camera gameCamera;
@@ -26,7 +26,7 @@ public class movement : MonoBehaviour
         dead = false;
         finish = false;
         rb = GetComponent<Rigidbody2D>();
-        boxCollider = GetComponent<BoxCollider2D>();
+        boxCollider = GetComponent<PolygonCollider2D>();
         boxCollider.isTrigger = false;
     }
 
