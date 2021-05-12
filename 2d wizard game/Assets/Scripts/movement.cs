@@ -15,7 +15,7 @@ public class movement : MonoBehaviour
     private bool hey2 = true;
     public static movement Instance { get; private set; }
     [SerializeField]
-    private int force;
+    private int gameOverForce;
 
     void Start()
     {
@@ -129,7 +129,7 @@ public class movement : MonoBehaviour
     }
     public void GameOverForce()
     {
-        rb.AddForce(new Vector2(-.5f,10) * Time.deltaTime * force);
+        rb.AddForce(new Vector2(-.5f,10) * Time.deltaTime * gameOverForce);
         boxCollider.isTrigger = true;
     }
 }

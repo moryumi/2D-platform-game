@@ -11,8 +11,9 @@ public class UIManager : MonoBehaviour
     public List<Sprite> spriteList;
     public Button sampleButton;
     public List<Button> buttonList;
+    private int distance_y = 0;
     [SerializeField]
-    private int distance_x, distance_y=0;
+    private int distance_x, distance_y2;
     private Button firstButton;
     private int currentLevel;
     public int CurrentLevel { get { return currentLevel; }  set{ currentLevel = value; } }
@@ -48,7 +49,7 @@ public class UIManager : MonoBehaviour
                     newButton.onClick.AddListener(()=>LevelButtonClick(newButton));
                 }
             }
-            distance_y = 250 * (y+1);
+            distance_y = distance_y2 * (y+1);
         }
 
         for (int x = 0; x < spriteList.Count; x++)

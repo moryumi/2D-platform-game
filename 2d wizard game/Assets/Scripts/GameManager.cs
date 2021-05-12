@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     public Button startButton;
     public GameObject oyuncak;
     private bool hey=false,pause=false;
-    public Animator startAnim, oyuncakSalınım,finishLevel;
+    public Animator startAnim,finishLevel;
     public ParticleSystem confetti;
     [SerializeField]
     private GameObject spawnPoint;
@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private int poolNum;
     [SerializeField]
-    private float rainSpeed,waitTime,loopTime;
+    private float doorWaitTime;
     private bool ok;
     
 
@@ -49,7 +49,6 @@ public class GameManager : MonoBehaviour
         gameOverPanel.SetActive(false);
         settingsPanel.SetActive(false);
         startButton.onClick.AddListener(StartAgainButton);
-        oyuncakSalınım.SetBool("isOyuncakSalınım", true);
 
         for (int i = 0; i < poolNum; i++)
         {
@@ -162,7 +161,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ClosedDoor(float waitTime,GameObject obj)
     {
-        yield return new WaitForSeconds(waitTime);
+        yield return new WaitForSeconds(doorWaitTime);
         obj.transform.GetChild(0).gameObject.SetActive(true);
         obj.transform.GetChild(1).gameObject.SetActive(false);
         movement.Destroy(movement.Instance.gameObject);
