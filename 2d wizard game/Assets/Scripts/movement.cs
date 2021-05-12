@@ -118,6 +118,16 @@ public class movement : MonoBehaviour
         }
        
     }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "rain")
+        {
+            GameManager.Instance.ExitRain();
+        }
+
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "rain_drop")

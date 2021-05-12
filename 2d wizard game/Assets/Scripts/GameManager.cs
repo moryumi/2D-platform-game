@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private float doorWaitTime;
     private bool ok;
+    public GameObject rainZone;
     
 
     // public AnimationCurve zCurve, yCurve;
@@ -77,6 +78,7 @@ public class GameManager : MonoBehaviour
     void Update()
     {
        // Debug.Log("ok "+ok);
+
     }
 
     public void GameOver()
@@ -173,6 +175,7 @@ public class GameManager : MonoBehaviour
 
     public void Rain()
     {
+        rainZone.SetActive(true);
         GameObject rain_ = GetRainDrop();
         if (rain_!=null)
         {
@@ -192,5 +195,14 @@ public class GameManager : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public void ExitRain()
+    {
+        rainZone.SetActive(false);
+        foreach (var current in rainDropList)
+        {
+            current.SetActive(false);
+        }
     }
 }
