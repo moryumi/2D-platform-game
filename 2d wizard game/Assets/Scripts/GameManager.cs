@@ -9,23 +9,23 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
    // public bool Hey { get; private set; }
 
-    public GameObject uıPanel,gameOverPanel,settingsPanel;
+    public GameObject uıPanel,gameOverPanel,settingsPanel,rainZone, oyuncak, rainDrop;
     public Button startButton;
-    public GameObject oyuncak;
     private bool hey=false,pause=false;
     public Animator startAnim,finishLevel;
     public ParticleSystem confetti;
     [SerializeField]
     private GameObject spawnPoint;
-    public GameObject rainDrop;
-    public List<GameObject> rainDropList;
     [SerializeField]
     private int poolNum;
     [SerializeField]
     private float doorWaitTime;
+    public List<GameObject> rainDropList;
+    public List<GameObject> emptyPotionList;
+    public Sprite fullPotion;
+    private int potionPickCount;
+
     private bool ok;
-    public GameObject rainZone;
-    
 
     // public AnimationCurve zCurve, yCurve;
     //[Range(0,100)] 
@@ -39,6 +39,7 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
+        potionPickCount = 0;
         rainDropList.Add(rainDrop);
         
         Time.timeScale = 1;
@@ -203,6 +204,20 @@ public class GameManager : MonoBehaviour
         foreach (var current in rainDropList)
         {
             current.SetActive(false);
+        }
+    }
+
+    public void CheckPotionCount()
+    {
+        potionPickCount++;
+        for (int i = 0; i < potionPickCount; i++)
+        {
+            emptyPotionList[i].GetComponent<Image>().sprite = fullPotion;
+        }
+       
+        if (potionPickCount==emptyPotionList.Count)
+        {
+           // Debug.Log("door unlocked");
         }
     }
 }

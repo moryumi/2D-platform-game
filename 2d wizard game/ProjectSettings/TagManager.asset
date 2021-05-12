@@ -15,6 +15,7 @@ TagManager:
   - Level15
   - rain
   - rain_drop
+  - potion
   layers:
   - Default
   - TransparentFX

@@ -136,6 +136,12 @@ public class movement : MonoBehaviour
             GameManager.Instance.GameOver();
             GameOverForce();
         }
+        else if(collision.gameObject.tag == "potion")
+        {
+            Debug.Log("potion");
+            Destroy(collision.gameObject);
+            GameManager.Instance.CheckPotionCount();
+        }
     }
     public void GameOverForce()
     {
