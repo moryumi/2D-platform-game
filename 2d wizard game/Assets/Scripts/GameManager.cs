@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
    // public bool Hey { get; private set; }
 
-    public GameObject uıPanel,gameOverPanel,settingsPanel,rainZone, oyuncak, rainDrop;
+    public GameObject uıPanel,gameOverPanel,settingsPanel,rainZone, oyuncak, rainDrop,door;
     public Button startButton;
     private bool hey=false,pause=false;
     public Animator startAnim,finishLevel;
@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     private float doorWaitTime;
     public List<GameObject> rainDropList;
     public List<GameObject> emptyPotionList;
+    public List<GameObject> potionListGameObject;
     public Sprite fullPotion;
     private int potionPickCount;
 
@@ -35,10 +36,11 @@ public class GameManager : MonoBehaviour
     {
         gameOverPanel = uıPanel.transform.GetChild(0).gameObject;
         settingsPanel = uıPanel.transform.GetChild(1).gameObject;
-        
     }
     void Start()
     {
+        DoorClosed();
+        UnHidePotionImage();
         potionPickCount = 0;
         rainDropList.Add(rainDrop);
         
@@ -88,14 +90,17 @@ public class GameManager : MonoBehaviour
         uıPanel.SetActive(true);
         gameOverPanel.SetActive(true);
         settingsPanel.SetActive(false);
+        HidePotionImage();
     }
 
-    public void FinishLevel(GameObject obj)
+    public void FinishLevel()
     {
+        DoorOpen();
         finishLevel.SetBool("isFinish", true);
-        StartCoroutine(ClosedDoor(2.5f, obj));
+        StartCoroutine(ClosedDoor(2.5f));
         UIManager.Instance.CurrentLevelSetter();
-       // Debug.Log("cur"+ UIManager.Instance.CurrentLevel);
+        // Debug.Log("cur"+ UIManager.Instance.CurrentLevel);
+        HidePotionImage();
     }
 
     public void StartAgainButton()
@@ -107,6 +112,7 @@ public class GameManager : MonoBehaviour
     public void SettingsButton()
     {
         ResetSettingsButton();
+        HidePotionImage();
     }
 
     public void ResetSettingsButton()
@@ -124,6 +130,7 @@ public class GameManager : MonoBehaviour
     public void OkButton()
     {
         uıPanel.SetActive(false);
+        UnHidePotionImage();
     }
 
     public void ReplayButton()
@@ -162,11 +169,10 @@ public class GameManager : MonoBehaviour
         settingsPanel.transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(true);
     }
 
-    IEnumerator ClosedDoor(float waitTime,GameObject obj)
+    IEnumerator ClosedDoor(float waitTime)
     {
         yield return new WaitForSeconds(doorWaitTime);
-        obj.transform.GetChild(0).gameObject.SetActive(true);
-        obj.transform.GetChild(1).gameObject.SetActive(false);
+        DoorClosed();
         movement.Destroy(movement.Instance.gameObject);
         uıPanel.gameObject.SetActive(true);
         uıPanel.transform.GetChild(2).gameObject.SetActive(true);
@@ -210,14 +216,43 @@ public class GameManager : MonoBehaviour
     public void CheckPotionCount()
     {
         potionPickCount++;
-        for (int i = 0; i < potionPickCount; i++)
+
+        if (potionPickCount > 0)
         {
-            emptyPotionList[i].GetComponent<Image>().sprite = fullPotion;
+            emptyPotionList[potionPickCount - 1].GetComponent<Image>().sprite = fullPotion;
         }
-       
-        if (potionPickCount==emptyPotionList.Count)
+
+        if (potionPickCount == emptyPotionList.Count)
         {
-           // Debug.Log("door unlocked");
+            DoorOpen();
         }
+    }
+
+    public void HidePotionImage()
+    {
+        foreach (var current in emptyPotionList)
+        {
+            current.GetComponent<Image>().enabled = false;
+        }
+    }
+
+    public void UnHidePotionImage()
+    {
+        foreach (var current in emptyPotionList)
+        {
+            current.GetComponent<Image>().enabled = true;
+        }
+    }
+
+    public void DoorOpen()
+    {
+        door.transform.GetChild(0).gameObject.SetActive(false);
+        door.transform.GetChild(1).gameObject.SetActive(true);
+    }
+
+    public void DoorClosed()
+    {
+        door.transform.GetChild(0).gameObject.SetActive(true);
+        door.transform.GetChild(1).gameObject.SetActive(false);
     }
 }

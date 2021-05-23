@@ -10101,7 +10101,7 @@ GameObject:
   - component: {fileID: 678829061}
   m_Layer: 0
   m_Name: DoorCollider
-  m_TagString: door_open
+  m_TagString: door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -14597,7 +14597,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1158347220
 Transform:
   m_ObjectHideFlags: 0
@@ -18845,6 +18845,7 @@ MonoBehaviour:
   rainZone: {fileID: 1341687372}
   oyuncak: {fileID: 1565082071}
   rainDrop: {fileID: 1091882767}
+  door: {fileID: 678829060}
   startButton: {fileID: 1630918745}
   startAnim: {fileID: 1630918749}
   finishLevel: {fileID: 494020833}
@@ -18857,6 +18858,7 @@ MonoBehaviour:
   - {fileID: 1231555348}
   - {fileID: 932355479}
   - {fileID: 2104370043}
+  potionListGameObject: []
   fullPotion: {fileID: 21300000, guid: 87c6b600baaee0d4f87216d24f6f2c14, type: 3}
 --- !u!4 &1761717218
 Transform:
@@ -19605,7 +19607,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1872545430
 SpriteRenderer:
   m_ObjectHideFlags: 0

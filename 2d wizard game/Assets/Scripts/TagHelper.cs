@@ -1,12 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 public static class TagHelper
 {
     public static void AddTag(string tag)
     {
+#if UNITY_EDITOR
+
         UnityEngine.Object[] asset = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset");
         if ((asset != null) && (asset.Length > 0))
         {
@@ -26,5 +30,6 @@ public static class TagHelper
             so.ApplyModifiedProperties();
             so.Update();
         }
+#endif
     }
 }

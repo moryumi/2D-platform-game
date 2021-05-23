@@ -5,7 +5,6 @@ using System;
 
 public class movement : MonoBehaviour
 {
-
     public Rigidbody2D rb;
     private PolygonCollider2D boxCollider;
     private bool collideWithGround;
@@ -84,12 +83,10 @@ public class movement : MonoBehaviour
             GameManager.Instance.GameOver();
             GameOverForce();
         }
-        else if (collision.gameObject.tag == "door_open")
+        else if (collision.gameObject.tag == "door")
         {
-            collision.transform.GetChild(0).gameObject.SetActive(false);
-            collision.transform.GetChild(1).gameObject.SetActive(true);
             finish = true;
-            GameManager.Instance.FinishLevel(collision.gameObject);
+            GameManager.Instance.FinishLevel();
         }
        
 
@@ -138,8 +135,8 @@ public class movement : MonoBehaviour
         }
         else if(collision.gameObject.tag == "potion")
         {
-            Debug.Log("potion");
             Destroy(collision.gameObject);
+            Debug.Log("potion");
             GameManager.Instance.CheckPotionCount();
         }
     }
