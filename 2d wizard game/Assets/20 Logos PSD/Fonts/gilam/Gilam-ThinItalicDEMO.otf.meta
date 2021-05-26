@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 6ace2bbc3eb00bf4890451d4fff0e470
+guid: 675ef40ba9e24477ebc93116d530019e
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -11,7 +11,9 @@ TrueTypeFontImporter:
   fontName: Gilam
   fontNames:
   - Gilam
-  fallbackFontReferences: []
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: eebe1b5c7ff612f4bb4b6b9602c632f4, type: 3}
+  - {fileID: 12800000, guid: 6ace2bbc3eb00bf4890451d4fff0e470, type: 3}
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1

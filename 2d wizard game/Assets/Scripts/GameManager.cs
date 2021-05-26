@@ -25,12 +25,7 @@ public class GameManager : MonoBehaviour
     public List<GameObject> potionListGameObject;
     public Sprite fullPotion;
     private int potionPickCount;
-
     private bool ok;
-
-    // public AnimationCurve zCurve, yCurve;
-    //[Range(0,100)] 
-    //public float oyuncakSpeed;
 
     private void Awake()
     {
@@ -41,14 +36,15 @@ public class GameManager : MonoBehaviour
     {
         DoorClosed();
         UnHidePotionImage();
-        potionPickCount = 0;
-        rainDropList.Add(rainDrop);
-        
         Time.timeScale = 1;
-        if (Instance==null)
+        potionPickCount = 0;
+
+        if (Instance == null)
         {
             Instance = this;
         }
+       
+        rainDropList.Add(rainDrop);
         uıPanel.gameObject.SetActive(false);
         gameOverPanel.SetActive(false);
         settingsPanel.SetActive(false);
@@ -74,13 +70,11 @@ public class GameManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-       // oyuncak.transform.eulerAngles += new Vector3(0, 0, -zCurve.Evaluate(1)) * Time.deltaTime * oyuncakSpeed;
-       // oyuncak.transform.position+= new Vector3(0, -yCurve.Evaluate(1),0) * Time.deltaTime * oyuncakSpeed;
+       
     }
 
     void Update()
     {
-       // Debug.Log("ok "+ok);
 
     }
 
@@ -99,7 +93,7 @@ public class GameManager : MonoBehaviour
         finishLevel.SetBool("isFinish", true);
         StartCoroutine(ClosedDoor(2.5f));
         UIManager.Instance.CurrentLevelSetter();
-        // Debug.Log("cur"+ UIManager.Instance.CurrentLevel);
+        // Debug.Log("currentLevel "+ UIManager.Instance.CurrentLevel);
         HidePotionImage();
     }
 

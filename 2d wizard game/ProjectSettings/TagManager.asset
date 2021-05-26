@@ -10,12 +10,11 @@ TagManager:
   - moveablecollider
   - testere
   - diken
-  - door_open
   - greenGround
-  - Level15
   - rain
   - rain_drop
   - potion
+  - door
   layers:
   - Default
   - TransparentFX

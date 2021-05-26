@@ -58,9 +58,8 @@ public class UIManager : MonoBehaviour
             buttonList[x].GetComponent<Image>().sprite= spriteList[x];
             buttonList[x].gameObject.tag ="Level"+(x+1);
         }
-        buttonList[0].transform.GetChild(0).gameObject.SetActive(false);
 
-      //  Debug.Log("awake");
+        buttonList[0].transform.GetChild(0).gameObject.SetActive(false);
 
         if (PlayerPrefs.GetInt("pref")==0)
         {
@@ -95,10 +94,6 @@ public class UIManager : MonoBehaviour
             PlayerPrefs.SetInt("pref", UIManager.Instance.currentLevel);
             PlayerPrefs.Save();
         }
-        
-          //  Debug.Log("yok");
-
-       // Debug.Log("prefupdate"+ PlayerPrefs.GetInt("pref"));
     }
 
     public void LevelButtonClick(Button btn)
@@ -118,11 +113,6 @@ public class UIManager : MonoBehaviour
     public void CurrentLevelSetter()
     {
         UIManager.Instance.CurrentLevel += 1;
-    }
-
-    private void OnApplicationQuit()
-    {
-       
     }
 
 }

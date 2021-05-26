@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 88ea75a9053f106459a11a24e6d30129
+guid: 77450d77898974b218ce2f0cafafd667
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -11,7 +11,9 @@ TrueTypeFontImporter:
   fontName: Peace Sans
   fontNames:
   - Peace Sans
-  fallbackFontReferences: []
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: f5e7dee13b48c5644b6fe87cb6185509, type: 3}
+  - {fileID: 12800000, guid: 88ea75a9053f106459a11a24e6d30129, type: 3}
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1

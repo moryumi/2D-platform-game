@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f7508c2b80305714d907f17b4684eb42
+guid: 059c48300a2714781af0dd4584fbb605
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -11,7 +11,8 @@ TrueTypeFontImporter:
   fontName: Kaushan Script
   fontNames:
   - Kaushan Script
-  fallbackFontReferences: []
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: f7508c2b80305714d907f17b4684eb42, type: 3}
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1
