@@ -46,6 +46,7 @@ public class UIManager : MonoBehaviour
                 {
                     Button newButton = Instantiate(firstButton, new Vector3(firstButton.transform.position.x + (distance_x * z), firstButton.transform.position.y - distance_y, firstButton.transform.position.z), firstButton.transform.rotation, firstButton.transform.parent);
                     buttonList.Add(newButton);
+                    newButton.interactable = false;
                     newButton.onClick.AddListener(()=>LevelButtonClick(newButton));
                 }
             }
@@ -60,12 +61,14 @@ public class UIManager : MonoBehaviour
         }
 
         buttonList[0].transform.GetChild(0).gameObject.SetActive(false);
+        buttonList[0].interactable = true;
 
         if (PlayerPrefs.GetInt("pref")==0)
         {
             for (int i = 0; i < UIManager.Instance.currentLevel; i++)
             {
                 buttonList[i].transform.GetChild(0).gameObject.SetActive(false);
+                buttonList[i].interactable = true;
             }
 
             for (int i = 0; i < (UIManager.Instance.currentLevel - 1); i++)
@@ -78,6 +81,7 @@ public class UIManager : MonoBehaviour
             for (int i = 0; i < PlayerPrefs.GetInt("pref"); i++)
             {
                 buttonList[i].transform.GetChild(0).gameObject.SetActive(false);
+                buttonList[i].interactable = true;
             }
 
             for (int i = 0; i < (PlayerPrefs.GetInt("pref") - 1); i++)

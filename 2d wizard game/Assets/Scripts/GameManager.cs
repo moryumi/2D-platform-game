@@ -50,21 +50,25 @@ public class GameManager : MonoBehaviour
         settingsPanel.SetActive(false);
         startButton.onClick.AddListener(StartAgainButton);
 
-        for (int i = 0; i < poolNum; i++)
+        if (UIManager.Instance.CurrentLevel==0)
         {
-            var currentRainDrop=Instantiate(rainDrop, new Vector3(Random.RandomRange(spawnPoint.transform.position.x - 2.5f, spawnPoint.transform.position.x + 2.5f) , spawnPoint.transform.position.y), rainDrop.transform.rotation);
-            currentRainDrop.SetActive(false);
-            currentRainDrop.transform.parent = rainDrop.transform.parent;
-            rainDropList.Add(currentRainDrop);
-        }
+            for (int i = 0; i < poolNum; i++)
+            {
+                var currentRainDrop = Instantiate(rainDrop, new Vector3(Random.RandomRange(spawnPoint.transform.position.x - 2.5f, spawnPoint.transform.position.x + 2.5f), spawnPoint.transform.position.y), rainDrop.transform.rotation);
+                currentRainDrop.SetActive(false);
+                currentRainDrop.transform.parent = rainDrop.transform.parent;
+                rainDropList.Add(currentRainDrop);
+            }
 
-        for (int i = 0; i < rainDropList.Count; i++)
-        {
-            var currentRainDrop = rainDropList[i];
-            currentRainDrop.GetComponent<Rigidbody2D>().gravityScale = Random.RandomRange(0.1f,2);
-            currentRainDrop.SetActive(false);
-            
+            for (int i = 0; i < rainDropList.Count; i++)
+            {
+                var currentRainDrop = rainDropList[i];
+                currentRainDrop.GetComponent<Rigidbody2D>().gravityScale = Random.RandomRange(0.1f, 2);
+                currentRainDrop.SetActive(false);
+
+            }
         }
+        
 
     }
 
@@ -174,7 +178,7 @@ public class GameManager : MonoBehaviour
         confetti.Play();
     }
 
-    public void Rain()
+    public void RainStart()
     {
         rainZone.SetActive(true);
         GameObject rain_ = GetRainDrop();
