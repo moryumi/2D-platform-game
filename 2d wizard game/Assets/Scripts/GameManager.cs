@@ -7,11 +7,11 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-   // public bool Hey { get; private set; }
+    // public bool Hey { get; private set; }
 
-    public GameObject uıPanel,gameOverPanel,settingsPanel,rainZone, oyuncak, rainDrop,door;
+    public GameObject uıPanel, gameOverPanel, settingsPanel, rainZone, oyuncak, rainDrop, door;
     public Button startButton;
-    private bool hey=false,pause=false;
+    private bool hey = false, pause = false;
     public Animator startAnim,finishLevel;
     public ParticleSystem confetti;
     [SerializeField]
@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        
         gameOverPanel = uıPanel.transform.GetChild(0).gameObject;
         settingsPanel = uıPanel.transform.GetChild(1).gameObject;
     }
@@ -45,9 +46,9 @@ public class GameManager : MonoBehaviour
         }
        
         rainDropList.Add(rainDrop);
-        uıPanel.gameObject.SetActive(false);
-        gameOverPanel.SetActive(false);
-        settingsPanel.SetActive(false);
+        //uıPanel.gameObject.SetActive(false);
+        //gameOverPanel.SetActive(false);
+        //settingsPanel.SetActive(false);
         startButton.onClick.AddListener(StartAgainButton);
 
         if (UIManager.Instance.CurrentLevel==0)
@@ -101,11 +102,6 @@ public class GameManager : MonoBehaviour
         HidePotionImage();
     }
 
-    public void StartAgainButton()
-    {
-       // Debug.Log("clicked");
-        SceneManager.LoadScene("Level_"+ UIManager.Instance.CurrentLevel);
-    }
 
     public void SettingsButton()
     {
@@ -118,11 +114,15 @@ public class GameManager : MonoBehaviour
         uıPanel.SetActive(true);
         settingsPanel.SetActive(true);
         gameOverPanel.SetActive(false);
-        for (int i = 0; i < settingsPanel.transform.GetChild(0).GetChildCount(); i++)
+        for (int i = 0; i < 4; i++)
         {
             settingsPanel.transform.GetChild(0).transform.GetChild(i).gameObject.SetActive(true);
         }
-        settingsPanel.transform.GetChild(0).transform.GetChild(settingsPanel.transform.GetChild(0).GetChildCount()-1).gameObject.SetActive(false);
+        for (int i = 4; i < settingsPanel.transform.GetChild(0).GetChildCount() - 1; i++)
+        {
+            settingsPanel.transform.GetChild(0).transform.GetChild(i).gameObject.SetActive(false);
+        }
+
     }
 
     public void OkButton()
@@ -142,11 +142,23 @@ public class GameManager : MonoBehaviour
         if (pause)
         {
             Time.timeScale = 0;
+            settingsPanel.transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(true);
+            settingsPanel.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
         }
         else
         {
             Time.timeScale = 1;
+            settingsPanel.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
+            settingsPanel.transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(false);
         }
+    }
+
+    public void HelpButton()
+    {
+        settingsPanel.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
+        settingsPanel.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
+        settingsPanel.transform.GetChild(0).transform.GetChild(2).gameObject.SetActive(false);
+        settingsPanel.transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(true);
     }
 
     public void NextLevel()
@@ -159,12 +171,11 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 
-    public void HelpButton()
+
+    public void StartAgainButton()
     {
-        settingsPanel.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
-        settingsPanel.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
-        settingsPanel.transform.GetChild(0).transform.GetChild(2).gameObject.SetActive(false);
-        settingsPanel.transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(true);
+        // Debug.Log("clicked");
+        SceneManager.LoadScene("Level_" + UIManager.Instance.CurrentLevel);
     }
 
     IEnumerator ClosedDoor(float waitTime)

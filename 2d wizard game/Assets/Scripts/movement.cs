@@ -49,16 +49,27 @@ public class movement : MonoBehaviour
                     {
                         //gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0,20f),ForceMode2D.Force);
                         gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.up * jetPackVelocity;
-                       //transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")* Mathf.Lerp(10f, 20f, 1f), 0) * Time.deltaTime ;
+                        //transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")* Mathf.Lerp(10f, 20f, 1f), 0) * Time.deltaTime ;
+                        Debug.Log("jetpack vertical");
+                        //gameObject.transform.GetChild(2).gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        Debug.Log("vertical değil");
+                        //gameObject.transform.GetChild(2).gameObject.SetActive(false);
                     }
                     if (Input.GetAxis("Horizontal") > 0)
                     {
                         transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 3000, 0.001f);
+
                     }
                     if (Input.GetAxis("Horizontal") < 0)
                     {
                         transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 3000, 0.001f);
                     }
+                    
+                   
+                    
                 }
                 else
                 {
@@ -108,6 +119,11 @@ public class movement : MonoBehaviour
             gameObject.transform.SetParent(collision.transform.parent);
 
         }
+        else if (collision.gameObject.tag == "wheel_part")
+        {
+            gameObject.transform.SetParent(collision.transform);
+
+        }
         else if (collision.gameObject.tag == "testere" || collision.gameObject.tag == "diken" || collision.gameObject.tag == "rain_drop")
         {
             dead = true;
@@ -143,7 +159,11 @@ public class movement : MonoBehaviour
             //Debug.Log("moveable");
             gameObject.transform.SetParent(null);
         }
-        
+        else if (collision.gameObject.tag == "wheel_part")
+        {
+            gameObject.transform.SetParent(null);
+        }
+
     }
    
     private void OnTriggerStay2D(Collider2D collision)
@@ -196,7 +216,7 @@ public class movement : MonoBehaviour
     IEnumerator JetPackCountdown()
     {
         fireAnimator.SetBool("isStart", true);
-        yield return new WaitForSeconds(15f);
+        yield return new WaitForSeconds(20f);
         fireAnimator.SetBool("isStart", false);
         fireAnimator.SetBool("isFinish", true);
         yield return new WaitForSeconds(5f);

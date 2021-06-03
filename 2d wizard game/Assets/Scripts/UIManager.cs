@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
+    public GameObject uıPanel, gameOverPanel, settingsPanel;
     public static UIManager Instance { get; private set; }
     public List<Sprite> spriteList;
     public Button sampleButton;
@@ -17,6 +18,7 @@ public class UIManager : MonoBehaviour
     private Button firstButton;
     private int currentLevel;
     public int CurrentLevel { get { return currentLevel; }  set{ currentLevel = value; } }
+    private bool hey = false, pause = false;
 
     void Awake()
     {
@@ -26,7 +28,11 @@ public class UIManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad (UIManager.Instance);
         }
-       
+
+        //gameOverPanel = uıPanel.transform.GetChild(0).gameObject;
+        //settingsPanel = uıPanel.transform.GetChild(1).gameObject;
+
+
         for (int i = 0; i < 15; i++)
         {
             TagHelper.AddTag("Level" + (i + 1));            //SpriteList loopunda çalışmadı?
@@ -91,6 +97,14 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        Debug.Log("UI mAnager start");
+        uıPanel.gameObject.SetActive(false);
+        gameOverPanel.SetActive(false);
+        settingsPanel.SetActive(false);
+    }
+
     void Update()
     {
         if (PlayerPrefs.HasKey("pref"))
@@ -112,6 +126,73 @@ public class UIManager : MonoBehaviour
                 currentLevel = i + 1;
             }
         }
+    }
+
+
+    public void SettingsButton()
+    {
+        ResetSettingsButton();
+        if (GameManager.Instance)
+        {
+            GameManager.Instance.HidePotionImage();
+        }
+       
+    }
+
+    public void ResetSettingsButton()
+    {
+        uıPanel.SetActive(true);
+        settingsPanel.SetActive(true);
+        gameOverPanel.SetActive(false);
+        for (int i = 0; i < 4; i++)
+        {
+            settingsPanel.transform.GetChild(0).transform.GetChild(i).gameObject.SetActive(true);
+        }
+        for (int i = 4; i < settingsPanel.transform.GetChild(0).GetChildCount() - 1; i++)
+        {
+            settingsPanel.transform.GetChild(0).transform.GetChild(i).gameObject.SetActive(false);
+        }
+
+    }
+
+    public void OkButton()
+    {
+        uıPanel.SetActive(false);
+        if (GameManager.Instance)
+        {
+            GameManager.Instance.UnHidePotionImage();
+        }
+        
+    }
+
+    public void ReplayButton()
+    {
+        SceneManager.LoadScene("Level_" + UIManager.Instance.CurrentLevel);
+    }
+
+    public void PauseButton()
+    {
+        pause = !pause;
+        if (pause)
+        {
+            Time.timeScale = 0;
+            settingsPanel.transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(true);
+            settingsPanel.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
+        }
+        else
+        {
+            Time.timeScale = 1;
+            settingsPanel.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(true);
+            settingsPanel.transform.GetChild(0).transform.GetChild(5).gameObject.SetActive(false);
+        }
+    }
+
+    public void HelpButton()
+    {
+        settingsPanel.transform.GetChild(0).transform.GetChild(0).gameObject.SetActive(false);
+        settingsPanel.transform.GetChild(0).transform.GetChild(1).gameObject.SetActive(false);
+        settingsPanel.transform.GetChild(0).transform.GetChild(2).gameObject.SetActive(false);
+        settingsPanel.transform.GetChild(0).transform.GetChild(4).gameObject.SetActive(true);
     }
 
     public void CurrentLevelSetter()
