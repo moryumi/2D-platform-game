@@ -216,9 +216,10 @@ public class movement : MonoBehaviour
     IEnumerator JetPackCountdown()
     {
         fireAnimator.SetBool("isStart", true);
-        yield return new WaitForSeconds(20f);
+        yield return new WaitForSeconds(12f);
         fireAnimator.SetBool("isStart", false);
         fireAnimator.SetBool("isFinish", true);
+        gameObject.GetComponent<Rigidbody2D>().gravityScale = 0.8f;
         yield return new WaitForSeconds(5f);
         jetPackClosed();
     }
