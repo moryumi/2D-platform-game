@@ -8,7 +8,8 @@ public class movement : MonoBehaviour
     public Rigidbody2D rb;
     private PolygonCollider2D boxCollider;
     private bool collideWithGround;
-    private bool dead, finish;
+    private bool dead, finish, enemyActive, jetPack, fanActive;
+    public bool Dead { get { return this.dead; } private set { } }
     public Camera gameCamera;
     public backgroundLoop refScript;
     private bool hey2 = true;
@@ -17,12 +18,17 @@ public class movement : MonoBehaviour
     private int gameOverForce;
     [SerializeField]
     public float jetPackVelocity;
-    private bool jetPack;
     public Animator fireAnimator;
+    public Enemy enemy;
+    public bool EnemyActive { get { return this.enemyActive; } private set { } }
+    public GameObject port_A2;
+    public GameObject port_B2;
 
     void Start()
     {
+       
         jetPack = false;
+        fanActive = false;
         if (Instance == null)
         {
             Instance = this;
@@ -66,25 +72,27 @@ public class movement : MonoBehaviour
                     if (Input.GetAxis("Horizontal") < 0)
                     {
                         transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 3000, 0.001f);
-                    }
-                    
-                   
-                    
+                    }  
                 }
                 else
                 {
-                    if (Input.GetAxis("Vertical") > 0)
+                    if (!fanActive)
                     {
-                        transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 5000, 0.001f);
+                        Debug.Log("movement");
+                        if (Input.GetAxis("Vertical") > 0)
+                        {
+                            transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 5000, 0.001f);
+                        }
+                        if (Input.GetAxis("Horizontal") > 0)
+                        {
+                            transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
+                        }
+                        if (Input.GetAxis("Horizontal") < 0)
+                        {
+                            transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
+                        }
                     }
-                    if (Input.GetAxis("Horizontal") > 0)
-                    {
-                        transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
-                    }
-                    if (Input.GetAxis("Horizontal") < 0)
-                    {
-                        transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
-                    }
+                    
                 }
              
                 
@@ -124,6 +132,11 @@ public class movement : MonoBehaviour
             gameObject.transform.SetParent(collision.transform);
 
         }
+        else if (collision.gameObject.tag == "elevator")
+        {
+            gameObject.transform.SetParent(collision.transform);
+
+        }
         else if (collision.gameObject.tag == "testere" || collision.gameObject.tag == "diken" || collision.gameObject.tag == "rain_drop")
         {
             dead = true;
@@ -144,6 +157,13 @@ public class movement : MonoBehaviour
             collision.transform.SetParent(gameObject.transform);
             collision.transform.localPosition = Vector3.zero;
         }
+        else if (collision.gameObject.tag == "enemy")
+        {
+            dead = true;
+            enemy.StopAnimation();
+            GameOverForce();
+        }
+
 
     }
 
@@ -163,27 +183,12 @@ public class movement : MonoBehaviour
         {
             gameObject.transform.SetParent(null);
         }
-
-    }
-   
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (collision.gameObject.tag == "rain")
+        else if (collision.gameObject.tag == "elevator")
         {
-            GameManager.Instance.RainStart();
-        }
-       
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.gameObject.tag == "rain")
-        {
-            GameManager.Instance.ExitRain();
+            gameObject.transform.SetParent(null);
         }
 
     }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "rain_drop")
@@ -192,13 +197,60 @@ public class movement : MonoBehaviour
             GameManager.Instance.GameOver();
             GameOverForce();
         }
-        else if(collision.gameObject.tag == "potion")
+        else if (collision.gameObject.tag == "potion")
         {
             Destroy(collision.gameObject);
             Debug.Log("potion");
             GameManager.Instance.CheckPotionCount();
         }
+        else if (collision.gameObject.tag == "port_A")
+        {
+            transform.localPosition = port_A2.transform.position;
+        }
+        else if (collision.gameObject.tag == "port_B")
+        {
+            transform.localPosition = port_B2.transform.position;
+        }
+        else if (collision.gameObject.tag == "fan")
+        {
+            fanActive = true;
+        }
     }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "rain")
+        {
+            GameManager.Instance.RainStart();
+        }
+        else if (collision.gameObject.tag == "enemy_zone")
+        {
+            enemyActive = true;
+            enemy.FollowCharacter();
+            enemy.AnimationPlay();
+        }
+
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "rain")
+        {
+            GameManager.Instance.ExitRain();
+        }
+        else if (collision.gameObject.tag == "enemy_zone")
+        {
+            enemyActive = false;
+            enemy.StopAnimation();
+        }
+        else if (collision.gameObject.tag == "fan")
+        {
+            fanActive = false;
+        }
+
+    }
+
+  
     public void GameOverForce()
     {
         rb.AddForce(new Vector2(-.5f,10) * Time.deltaTime * gameOverForce);

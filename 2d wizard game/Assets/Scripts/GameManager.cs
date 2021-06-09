@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     // public bool Hey { get; private set; }
+    Enemy enemy;
 
     public GameObject uıPanel, gameOverPanel, settingsPanel, rainZone, oyuncak, rainDrop, door;
     public Button startButton;
@@ -29,7 +30,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        
+        enemy = GetComponent<Enemy>();
         gameOverPanel = uıPanel.transform.GetChild(0).gameObject;
         settingsPanel = uıPanel.transform.GetChild(1).gameObject;
     }
@@ -80,7 +81,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-
+       
     }
 
     public void GameOver()
