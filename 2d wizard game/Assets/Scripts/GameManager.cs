@@ -8,8 +8,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     // public bool Hey { get; private set; }
-    Enemy enemy;
-
+    
     public GameObject uıPanel, gameOverPanel, settingsPanel, rainZone, oyuncak, rainDrop, door;
     public Button startButton;
     private bool hey = false, pause = false;
@@ -30,7 +29,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        enemy = GetComponent<Enemy>();
+      
         gameOverPanel = uıPanel.transform.GetChild(0).gameObject;
         settingsPanel = uıPanel.transform.GetChild(1).gameObject;
     }
@@ -70,8 +69,6 @@ public class GameManager : MonoBehaviour
 
             }
         }
-        
-
     }
 
     private void FixedUpdate()
@@ -99,7 +96,7 @@ public class GameManager : MonoBehaviour
         finishLevel.SetBool("isFinish", true);
         StartCoroutine(ClosedDoor(2.5f));
         UIManager.Instance.CurrentLevelSetter();
-        // Debug.Log("currentLevel "+ UIManager.Instance.CurrentLevel);
+        Debug.Log("currentLevel "+ UIManager.Instance.CurrentLevel);
         HidePotionImage();
     }
 
@@ -234,6 +231,8 @@ public class GameManager : MonoBehaviour
 
         if (potionPickCount == emptyPotionList.Count)
         {
+            Debug.Log("potion completed");
+            movement.Instance.DoorOpen=true;
             DoorOpen();
         }
     }

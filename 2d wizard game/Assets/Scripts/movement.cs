@@ -8,8 +8,9 @@ public class movement : MonoBehaviour
     public Rigidbody2D rb;
     private PolygonCollider2D boxCollider;
     private bool collideWithGround;
-    private bool dead, finish, enemyActive, jetPack, fanActive;
+    private bool dead, finish, enemyActive, jetPack, fanActive,onLadder,doorOpen;
     public bool Dead { get { return this.dead; } private set { } }
+    public bool DoorOpen { get { return this.doorOpen; } set { this.doorOpen = value; } }
     public Camera gameCamera;
     public backgroundLoop refScript;
     private bool hey2 = true;
@@ -23,10 +24,14 @@ public class movement : MonoBehaviour
     public bool EnemyActive { get { return this.enemyActive; } private set { } }
     public GameObject port_A2;
     public GameObject port_B2;
+    private RaycastHit2D raycastUp,raycastDown;
+    public float distance, ladderSpeed;
+    public LayerMask ladderLayer;
+    public BoxCollider2D ladderParent;
 
     void Start()
     {
-       
+        doorOpen = false;
         jetPack = false;
         fanActive = false;
         if (Instance == null)
@@ -42,9 +47,12 @@ public class movement : MonoBehaviour
 
     void Update()
     {
-       // hey2=GameManager.Instance.Hey;
-       // Debug.Log("jetpack "+jetPack);
-       // Debug.Log(transform.position);
+        // hey2=GameManager.Instance.Hey;
+        // Debug.Log("jetpack "+jetPack);
+        // Debug.Log(transform.position);
+        //raycastUp = Physics2D.Raycast(transform.position,Vector2.up,distance,ladderLayer);
+        //raycastDown = Physics2D.Raycast(transform.position, Vector2.up, distance,ladderLayer);
+
         if (!finish)
         {
             if (!dead)
@@ -72,30 +80,60 @@ public class movement : MonoBehaviour
                     if (Input.GetAxis("Horizontal") < 0)
                     {
                         transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 3000, 0.001f);
-                    }  
+                    }
                 }
                 else
                 {
                     if (!fanActive)
                     {
-                        Debug.Log("movement");
-                        if (Input.GetAxis("Vertical") > 0)
+                        //Debug.Log("movement");
+                        if (onLadder)
                         {
-                            transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 5000, 0.001f);
+                            if (Input.GetAxis("Horizontal") > 0)
+                            {
+                                transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
+                            }
+                            if (Input.GetAxis("Horizontal") < 0)
+                            {
+                                transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
+                            }
+
+                            if (Input.GetAxis("Vertical") > 0 || Input.GetAxis("Vertical") < 0)
+                            {
+                                Debug.Log("onLadder");
+                                GetComponent<Rigidbody2D>().gravityScale = 0;
+                                if (Input.GetAxis("Vertical") > 0)
+                                {
+                                    ladderParent.isTrigger = true;
+                                    transform.position += new Vector3(0, 1f, 0) * Time.deltaTime * ladderSpeed;
+                                }
+                                if(Input.GetAxis("Vertical") < 0)
+                                {
+                                    ladderParent.isTrigger = true;
+                                    transform.position -= new Vector3(0, 1f, 0) * Time.deltaTime * ladderSpeed;
+                                }
+                                
+                            }
                         }
-                        if (Input.GetAxis("Horizontal") > 0)
+                        else
                         {
-                            transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
+                            GetComponent<Rigidbody2D>().gravityScale = 2;
+                            if (Input.GetAxis("Vertical") > 0)
+                            {
+                                transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 5000, 0.001f);
+                            }
+                            if (Input.GetAxis("Horizontal") > 0)
+                            {
+                                transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
+                            }
+                            if (Input.GetAxis("Horizontal") < 0)
+                            {
+                                transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
+                            }
                         }
-                        if (Input.GetAxis("Horizontal") < 0)
-                        {
-                            transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
-                        }
+                        
                     }
-                    
                 }
-             
-                
 
                 if (transform.position.x + 10 >= refScript.ScreenBounds.x / 2)
                 {
@@ -143,11 +181,7 @@ public class movement : MonoBehaviour
             GameManager.Instance.GameOver();
             GameOverForce();
         }
-        else if (collision.gameObject.tag == "door")
-        {
-            finish = true;
-            GameManager.Instance.FinishLevel();
-        }
+       
         else if (collision.gameObject.tag == "jetpack")
         {
             jetPack = true;
@@ -163,8 +197,6 @@ public class movement : MonoBehaviour
             enemy.StopAnimation();
             GameOverForce();
         }
-
-
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -187,8 +219,8 @@ public class movement : MonoBehaviour
         {
             gameObject.transform.SetParent(null);
         }
-
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "rain_drop")
@@ -215,6 +247,22 @@ public class movement : MonoBehaviour
         {
             fanActive = true;
         }
+        else if (collision.gameObject.tag == "ladder")
+        {
+            onLadder = true;
+            ladderParent = collision.transform.parent.GetComponent<BoxCollider2D>();
+           //collision.transform.parent.GetComponent<BoxCollider2D>().isTrigger = true;
+        }
+        else if (collision.gameObject.tag == "door")
+        {
+            if (doorOpen)
+            {
+                Debug.Log("dooropen");
+                this.transform.GetChild(0).GetComponent<Animation>().Play();
+                finish = true;
+                GameManager.Instance.FinishLevel();
+            }
+        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -229,7 +277,6 @@ public class movement : MonoBehaviour
             enemy.FollowCharacter();
             enemy.AnimationPlay();
         }
-
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -247,7 +294,13 @@ public class movement : MonoBehaviour
         {
             fanActive = false;
         }
-
+        else if (collision.gameObject.tag == "ladder")
+        {
+            ladderParent = collision.transform.parent.GetComponent<BoxCollider2D>();
+            ladderParent.isTrigger = false;
+            //collision.transform.parent.GetComponent<BoxCollider2D>().isTrigger = false;
+            onLadder = false;
+        }
     }
 
   

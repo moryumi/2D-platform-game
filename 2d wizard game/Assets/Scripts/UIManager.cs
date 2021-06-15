@@ -16,14 +16,14 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private int distance_x, distance_y2;
     private Button firstButton;
-    private int currentLevel;
+    public int currentLevel;
     public int CurrentLevel { get { return currentLevel; }  set{ currentLevel = value; } }
     private bool hey = false, pause = false;
 
     void Awake()
     {
         if (Instance != null) {
-            Destroy (UIManager.Instance);
+           // Destroy (UIManager.Instance);
         } else {
             Instance = this;
             DontDestroyOnLoad (UIManager.Instance);
@@ -69,32 +69,20 @@ public class UIManager : MonoBehaviour
         buttonList[0].transform.GetChild(0).gameObject.SetActive(false);
         buttonList[0].interactable = true;
 
-        if (PlayerPrefs.GetInt("pref")==0)
+        for (int i = 0; i < UIManager.Instance.currentLevel; i++)
         {
-            for (int i = 0; i < UIManager.Instance.currentLevel; i++)
+            buttonList[i].transform.GetChild(0).gameObject.SetActive(false);
+            buttonList[i].interactable = false;
+            if (i== UIManager.Instance.currentLevel-1)
             {
-                buttonList[i].transform.GetChild(0).gameObject.SetActive(false);
                 buttonList[i].interactable = true;
             }
-
-            for (int i = 0; i < (UIManager.Instance.currentLevel - 1); i++)
-            {
-                buttonList[i].interactable = false;
-            }
         }
-        else
-        {
-            for (int i = 0; i < PlayerPrefs.GetInt("pref"); i++)
-            {
-                buttonList[i].transform.GetChild(0).gameObject.SetActive(false);
-                buttonList[i].interactable = true;
-            }
 
-            for (int i = 0; i < (PlayerPrefs.GetInt("pref") - 1); i++)
-            {
-                buttonList[i].interactable = false;
-            }
-        }
+        //for (int i = 0; i < (UIManager.Instance.currentLevel - 1); i++)
+        //{
+        //    buttonList[i].interactable = false;
+        //}
     }
 
     private void Start()
@@ -123,7 +111,7 @@ public class UIManager : MonoBehaviour
                 //Debug.Log("tıkladı "+(i + 1));
                 SceneManager.LoadScene("Level_"+(i+1));
                 gameObject.SetActive(false);
-                currentLevel = i + 1;
+                UIManager.Instance.currentLevel = i + 1;
             }
         }
     }
@@ -132,7 +120,7 @@ public class UIManager : MonoBehaviour
 
     public void CurrentLevelSetter()
     {
-        UIManager.Instance.CurrentLevel += 1;
+        UIManager.Instance.currentLevel += 1;
     }
 
 }
