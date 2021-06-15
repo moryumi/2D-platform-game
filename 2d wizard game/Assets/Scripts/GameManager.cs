@@ -125,6 +125,7 @@ public class GameManager : MonoBehaviour
 
     public void OkButton()
     {
+        settingsPanel.SetActive(false);
         uıPanel.SetActive(false);
         UnHidePotionImage();
     }

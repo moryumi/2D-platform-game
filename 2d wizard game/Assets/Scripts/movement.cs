@@ -8,7 +8,7 @@ public class movement : MonoBehaviour
     public Rigidbody2D rb;
     private PolygonCollider2D boxCollider;
     private bool collideWithGround;
-    private bool dead, finish, enemyActive, jetPack, fanActive,onLadder,doorOpen;
+    private bool dead, finish, enemyActive, jetPack, fanActive,onLadder,doorOpen,verticalStart;
     public bool Dead { get { return this.dead; } private set { } }
     public bool DoorOpen { get { return this.doorOpen; } set { this.doorOpen = value; } }
     public Camera gameCamera;
@@ -31,6 +31,7 @@ public class movement : MonoBehaviour
 
     void Start()
     {
+        verticalStart = true;
         doorOpen = false;
         jetPack = false;
         fanActive = false;
@@ -91,11 +92,11 @@ public class movement : MonoBehaviour
                         {
                             if (Input.GetAxis("Horizontal") > 0)
                             {
-                                transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
+                                transform.position += new Vector3(Input.GetAxis("Horizontal"), 0, 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
                             }
                             if (Input.GetAxis("Horizontal") < 0)
                             {
-                                transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
+                                transform.position += new Vector3(Input.GetAxis("Horizontal"), 0, 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
                             }
 
                             if (Input.GetAxis("Vertical") > 0 || Input.GetAxis("Vertical") < 0)
@@ -118,17 +119,18 @@ public class movement : MonoBehaviour
                         else
                         {
                             GetComponent<Rigidbody2D>().gravityScale = 2;
-                            if (Input.GetAxis("Vertical") > 0)
+                            if (Input.GetAxis("Vertical") > 0 & verticalStart)
                             {
-                                transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 5000, 0.001f);
+                                transform.position += new Vector3(0, Input.GetAxis("Vertical"), 0).normalized * Mathf.Lerp(0, 14, 0.8f * Time.deltaTime) ;
+                               // StartCoroutine("VerticalTime");
                             }
                             if (Input.GetAxis("Horizontal") > 0)
                             {
-                                transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
+                                transform.position += new Vector3(Input.GetAxis("Horizontal"), 0, 0).normalized * Mathf.Lerp(0, 26, .3f * Time.deltaTime) ;// * Mathf.Lerp(0, 7000, 0.001f)
                             }
                             if (Input.GetAxis("Horizontal") < 0)
                             {
-                                transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
+                                transform.position += new Vector3(Input.GetAxis("Horizontal"), 0, 0).normalized * Mathf.Lerp(0, 26, .3f * Time.deltaTime) ;//* Mathf.Lerp(0, 7000, 0.001f)
                             }
                         }
                         
@@ -314,18 +316,26 @@ public class movement : MonoBehaviour
     {
         jetPack = false;
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 2f;
-        gameObject.transform.GetChild(2).gameObject.SetActive(false);
-        gameObject.transform.GetChild(2).SetParent(gameObject.transform.parent);
+        gameObject.transform.GetChild(1).gameObject.SetActive(false);
+        gameObject.transform.GetChild(1).SetParent(gameObject.transform.parent);
     }
 
     IEnumerator JetPackCountdown()
     {
         fireAnimator.SetBool("isStart", true);
-        yield return new WaitForSeconds(12f);
+        yield return new WaitForSeconds(9f);
         fireAnimator.SetBool("isStart", false);
         fireAnimator.SetBool("isFinish", true);
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 0.8f;
         yield return new WaitForSeconds(5f);
         jetPackClosed();
+    }
+
+    IEnumerator VerticalTime()
+    {
+        yield return new WaitForSeconds(.4f);
+        verticalStart = false;
+        yield return new WaitForSeconds(.5f);
+        verticalStart = true;
     }
 }
