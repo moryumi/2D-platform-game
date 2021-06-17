@@ -107,7 +107,8 @@ aa165095bcf0f4d99594ea33df01c81b UnityEngine.UI.dll:UnityEngine.UI.Slider
 0fd6822f6177297bd0eb4d83cc7a9030 UnityEngine.UI.dll:UnityEngine.UI.ToggleGroup
 abf1930d8126d0b2e00e9449129a0190 UnityEngine.UI.dll:UnityEngine.EventSystems.TouchInputModule
 64e54c0cbb0177c5ea26f340efb9ff85 UnityEngine.UI.dll:UnityEngine.UI.VerticalLayoutGroup
-d1503b79e912e43244172912225ddae7 Assembly-CSharp.dll:.UIManager
+b55eddebddf4eb854e8fdd31ae9cf841 Assembly-CSharp.dll:.UIManager
+91cd1560ad993a2e32b9b515a6f0cd32 Assembly-CSharp.dll:.Enemy
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp-firstpass.dll:UnityStandardAssets.Vehicles.Ball.BallUserControl
 1731d95cc8dce262956d345535456351 Assembly-CSharp-firstpass.dll:UnityStandardAssets.Cameras.AutoCam
 e540a01426f9ad59088593bf72bcd255 Assembly-CSharp-firstpass.dll:UnityStandardAssets.Utility.TimedObjectActivator
@@ -254,7 +255,7 @@ c933b2cffdb9d1429a103e9d63c523ef Assembly-CSharp-firstpass.dll:UnityStandardAsse
 03b9ef2ed536e8d6280069f2195174da Assembly-CSharp-firstpass.dll:UnityStandardAssets.Utility.SimpleActivatorMenu
 274152c972478468d8321a977bbca8e3 Assembly-CSharp.dll:TMPro.Examples.TMP_TextInfoDebugTool
 daa6a65fb0f785335ff43e9998133a34 Assembly-CSharp-firstpass.dll:UnityStandardAssets.Vehicles.Car.Mudguard
-0ebc418a497dfb835f459d4ff0010118 Assembly-CSharp.dll:.movement
+e292ca09cef6bd5e3b94ef4090a03717 Assembly-CSharp.dll:.movement
 bd3f0ca738703903e759f77536ed74fd Assembly-CSharp.dll:TMPro.Examples.TMP_FrameRateCounter
 a1ca1237bad0f30ea5ba8f4060929114 Assembly-CSharp.dll:TMPro.Examples.TMP_TextSelector_B
 7e6b022cd7f1c29976ca8b1a21d06265 Assembly-CSharp.dll:UnityStandardAssets.SceneUtils.PlaceTargetWithMouse
