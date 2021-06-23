@@ -265,4 +265,5 @@ public class GameManager : MonoBehaviour
         door.transform.GetChild(0).gameObject.SetActive(true);
         door.transform.GetChild(1).gameObject.SetActive(false);
     }
+
 }

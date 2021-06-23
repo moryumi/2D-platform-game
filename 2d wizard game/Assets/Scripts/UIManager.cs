@@ -22,6 +22,7 @@ public class UIManager : MonoBehaviour
 
     void Awake()
     {
+        currentLevel= PlayerPrefs.GetInt("pref");
         if (Instance != null) {
            // Destroy (UIManager.Instance);
         } else {
@@ -31,8 +32,6 @@ public class UIManager : MonoBehaviour
 
         //gameOverPanel = uıPanel.transform.GetChild(0).gameObject;
         //settingsPanel = uıPanel.transform.GetChild(1).gameObject;
-
-
         for (int i = 0; i < 15; i++)
         {
             TagHelper.AddTag("Level" + (i + 1));            //SpriteList loopunda çalışmadı?
@@ -69,15 +68,7 @@ public class UIManager : MonoBehaviour
         buttonList[0].transform.GetChild(0).gameObject.SetActive(false);
         buttonList[0].interactable = true;
 
-        for (int i = 0; i < UIManager.Instance.currentLevel; i++)
-        {
-            buttonList[i].transform.GetChild(0).gameObject.SetActive(false);
-            buttonList[i].interactable = false;
-            if (i== UIManager.Instance.currentLevel-1)
-            {
-                buttonList[i].interactable = true;
-            }
-        }
+        
 
         //for (int i = 0; i < (UIManager.Instance.currentLevel - 1); i++)
         //{
@@ -87,6 +78,15 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
+        for (int i = 0; i < UIManager.Instance.currentLevel; i++)
+        {
+            buttonList[i].transform.GetChild(0).gameObject.SetActive(false);
+            buttonList[i].interactable = false;
+            if (i == UIManager.Instance.currentLevel - 1)
+            {
+                buttonList[i].interactable = true;
+            }
+        }
         Debug.Log("UI mAnager start");
         uıPanel.gameObject.SetActive(false);
         gameOverPanel.SetActive(false);
@@ -95,11 +95,8 @@ public class UIManager : MonoBehaviour
 
     void Update()
     {
-        if (PlayerPrefs.HasKey("pref"))
-        {
-            PlayerPrefs.SetInt("pref", UIManager.Instance.currentLevel);
-            PlayerPrefs.Save();
-        }
+       
+        // Debug.Log("pref is " + PlayerPrefs.GetInt("pref"));
     }
 
     public void LevelButtonClick(Button btn)
@@ -122,5 +119,6 @@ public class UIManager : MonoBehaviour
     {
         UIManager.Instance.currentLevel += 1;
     }
+
 
 }
