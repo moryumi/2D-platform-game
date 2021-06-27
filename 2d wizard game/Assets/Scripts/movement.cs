@@ -437,12 +437,15 @@ public class movement : MonoBehaviour
         left = false;
         right = false;
         up = false;
+        down = false;
     }
 
     public void IdleUp()
     {
         up = false;
+        down = false;
     }
+    
 
     //IEnumerator VerticalTime()
     //{
