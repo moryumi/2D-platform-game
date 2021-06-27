@@ -51,10 +51,11 @@ public class GameManager : MonoBehaviour
         //settingsPanel.SetActive(false);
         startButton.onClick.AddListener(StartAgainButton);
 
-        if (UIManager.Instance.CurrentLevel==0)
+        if (UIManager.Instance.CurrentLevel==1)
         {
             for (int i = 0; i < poolNum; i++)
             {
+                Debug.Log("poolnum");
                 var currentRainDrop = Instantiate(rainDrop, new Vector3(Random.RandomRange(spawnPoint.transform.position.x - 2.5f, spawnPoint.transform.position.x + 2.5f), spawnPoint.transform.position.y), rainDrop.transform.rotation);
                 currentRainDrop.SetActive(false);
                 currentRainDrop.transform.parent = rainDrop.transform.parent;
@@ -63,6 +64,7 @@ public class GameManager : MonoBehaviour
 
             for (int i = 0; i < rainDropList.Count; i++)
             {
+                Debug.Log("rigidbody");
                 var currentRainDrop = rainDropList[i];
                 currentRainDrop.GetComponent<Rigidbody2D>().gravityScale = Random.RandomRange(0.1f, 2);
                 currentRainDrop.SetActive(false);
@@ -194,6 +196,7 @@ public class GameManager : MonoBehaviour
 
     public void RainStart()
     {
+        //Debug.Log("rainstart");
         rainZone.SetActive(true);
         GameObject rain_ = GetRainDrop();
         if (rain_!=null)
@@ -207,6 +210,7 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < rainDropList.Count; i++)
         {
+            Debug.Log("current drop");
             var currentLevel = rainDropList[i];
             if (!currentLevel.activeInHierarchy)
             {
