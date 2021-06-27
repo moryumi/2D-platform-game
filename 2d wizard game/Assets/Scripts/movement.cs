@@ -5,6 +5,7 @@ using System;
 
 public class movement : MonoBehaviour
 {
+    public FixedJoystick fj;
     public Rigidbody2D rb;
     private PolygonCollider2D boxCollider;
     private bool collideWithGround;
@@ -31,7 +32,7 @@ public class movement : MonoBehaviour
 
     void Start()
     {
-        verticalStart = true;
+       // verticalStart = true;
         doorOpen = false;
         jetPack = false;
         fanActive = false;
@@ -63,10 +64,10 @@ public class movement : MonoBehaviour
                     if (Input.GetAxis("Vertical") > 0)
                     {
                         //gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0,20f),ForceMode2D.Force);
-                        gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.up * jetPackVelocity;
-                        //transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")* Mathf.Lerp(10f, 20f, 1f), 0) * Time.deltaTime ;
-                        Debug.Log("jetpack vertical");
                         //gameObject.transform.GetChild(2).gameObject.SetActive(true);
+                        //transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")* Mathf.Lerp(10f, 20f, 1f), 0) * Time.deltaTime ;
+                        gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.up * jetPackVelocity;
+                        Debug.Log("jetpack vertical");
                     }
                     else
                     {
@@ -118,22 +119,40 @@ public class movement : MonoBehaviour
                         }
                         else
                         {
+                            if (fj.Direction.y > 0)
+                            {
+                                Debug.Log("up");
+                                transform.position += new Vector3(0, fj.Direction.y, 0).normalized * Mathf.Lerp(0, 14, 0.8f * Time.deltaTime);
+                            }
+                            if (fj.Direction.x>0)
+                            {
+                                Debug.Log("right");
+                                transform.position += new Vector3(fj.Direction.x, 0, 0).normalized * Mathf.Lerp(0, 26, .3f * Time.deltaTime);// * Mathf.Lerp(0, 7000, 0.001f)
+                            }
+                            if (fj.Direction.x < 0)
+                            {
+                                Debug.Log("left");
+                                transform.position += new Vector3(fj.Direction.x, 0, 0).normalized * Mathf.Lerp(0, 26, .3f * Time.deltaTime);//* Mathf.Lerp(0, 7000, 0.001f)
+                            }
                             GetComponent<Rigidbody2D>().gravityScale = 2;
-                            if (Input.GetAxis("Vertical") > 0 & verticalStart)
-                            {
-                                transform.position += new Vector3(0, Input.GetAxis("Vertical"), 0).normalized * Mathf.Lerp(0, 14, 0.8f * Time.deltaTime) ;
-                               // StartCoroutine("VerticalTime");
-                            }
-                            if (Input.GetAxis("Horizontal") > 0)
-                            {
-                                transform.position += new Vector3(Input.GetAxis("Horizontal"), 0, 0).normalized * Mathf.Lerp(0, 26, .3f * Time.deltaTime) ;// * Mathf.Lerp(0, 7000, 0.001f)
-                            }
-                            if (Input.GetAxis("Horizontal") < 0)
-                            {
-                                transform.position += new Vector3(Input.GetAxis("Horizontal"), 0, 0).normalized * Mathf.Lerp(0, 26, .3f * Time.deltaTime) ;//* Mathf.Lerp(0, 7000, 0.001f)
-                            }
+                            #if (UNITY_EDITOR && !UNITY_ANDROID)
+                                                        if (Input.GetAxis("Vertical") > 0)
+                                                        {
+                                                            transform.position += new Vector3(0, Input.GetAxis("Vertical"), 0).normalized * Mathf.Lerp(0, 14, 0.8f * Time.deltaTime);
+                                                            // StartCoroutine("VerticalTime");
+                                                        }
+                                                        if (Input.GetAxis("Horizontal") > 0)
+                                                        {
+                                                            transform.position += new Vector3(Input.GetAxis("Horizontal"), 0, 0).normalized * Mathf.Lerp(0, 26, .3f * Time.deltaTime);// * Mathf.Lerp(0, 7000, 0.001f)
+                                                        }
+                                                        if (Input.GetAxis("Horizontal") < 0)
+                                                        {
+                                                            transform.position += new Vector3(Input.GetAxis("Horizontal"), 0, 0).normalized * Mathf.Lerp(0, 26, .3f * Time.deltaTime);//* Mathf.Lerp(0, 7000, 0.001f)
+                                                        }
+                            #endif
+
                         }
-                        
+
                     }
                 }
 
@@ -331,11 +350,11 @@ public class movement : MonoBehaviour
         jetPackClosed();
     }
 
-    IEnumerator VerticalTime()
-    {
-        yield return new WaitForSeconds(.4f);
-        verticalStart = false;
-        yield return new WaitForSeconds(.5f);
-        verticalStart = true;
-    }
+    //IEnumerator VerticalTime()
+    //{
+    //    yield return new WaitForSeconds(.4f);
+    //    verticalStart = false;
+    //    yield return new WaitForSeconds(.5f);
+    //    verticalStart = true;
+    //}
 }

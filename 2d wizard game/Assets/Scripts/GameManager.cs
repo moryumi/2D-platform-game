@@ -78,7 +78,11 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-       
+        //if (PlayerPrefs.HasKey("pref"))
+        //{
+        //    PlayerPrefs.SetInt("pref", UIManager.Instance.CurrentLevel);
+        //    PlayerPrefs.Save();
+        //}
     }
 
     public void GameOver()
