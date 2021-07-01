@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     public List<GameObject> rainDropList;
     public List<GameObject> emptyPotionList;
     public List<GameObject> potionListGameObject;
+    public List<GameObject> buttonList;
     public Sprite fullPotion;
     private int potionPickCount;
     private bool ok;
@@ -37,6 +38,7 @@ public class GameManager : MonoBehaviour
     {
         DoorClosed();
         UnHidePotionImage();
+        UnHideInputButton();
         Time.timeScale = 1;
         potionPickCount = 0;
 
@@ -94,6 +96,7 @@ public class GameManager : MonoBehaviour
         gameOverPanel.SetActive(true);
         settingsPanel.SetActive(false);
         HidePotionImage();
+        HideInputButton();
     }
 
     public void FinishLevel()
@@ -104,6 +107,7 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.CurrentLevelSetter();
         Debug.Log("currentLevel "+ UIManager.Instance.CurrentLevel);
         HidePotionImage();
+        HideInputButton();
     }
 
 
@@ -111,6 +115,7 @@ public class GameManager : MonoBehaviour
     {
         ResetSettingsButton();
         HidePotionImage();
+        HideInputButton();
     }
 
     public void ResetSettingsButton()
@@ -134,6 +139,7 @@ public class GameManager : MonoBehaviour
         settingsPanel.SetActive(false);
         uıPanel.SetActive(false);
         UnHidePotionImage();
+        UnHideInputButton();
     }
 
     public void ReplayButton()
@@ -274,4 +280,19 @@ public class GameManager : MonoBehaviour
         door.transform.GetChild(1).gameObject.SetActive(false);
     }
 
+    public void HideInputButton()
+    {
+        foreach (var currentButtons in buttonList)
+        {
+            currentButtons.GetComponent<Image>().enabled = false;
+        }
+    }
+
+    public void UnHideInputButton()
+    {
+        foreach (var currentButtons in buttonList)
+        {
+            currentButtons.GetComponent<Image>().enabled = true;
+        }
+    }
 }

@@ -20,7 +20,7 @@ public class movement : MonoBehaviour
     private int gameOverForce;
     [SerializeField]
     public float jetPackVelocity;
-    public Animator fireAnimator;
+    public Animator fireAnimator,characterAnim;
     public Enemy enemy;
     public bool EnemyActive { get { return this.enemyActive; } private set { } }
     public GameObject port_A2;
@@ -59,26 +59,22 @@ public class movement : MonoBehaviour
         {
             if (!dead)
             {
-               
                 if (jetPack)
                 {
+                    if (up)
+                    {
+                        gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.up * jetPackVelocity;
+                    }
                     if (left)
                     {
                         transform.position += new Vector3(-1, 1, 0) * Time.deltaTime * Mathf.Lerp(0, 3000, 0.001f);
                     }
                     if (right)
                     {
+                        
                         transform.position += new Vector3(1, 1, 0) * Time.deltaTime * Mathf.Lerp(0, 3000, 0.001f);
                     }
-                    if (up)
-                    {
-                        gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.up * jetPackVelocity;
-                    }
-                    else
-                    {
-                        Debug.Log("vertical değil");
-                        
-                    }
+                  
                     #if (UNITY_EDITOR)
                         if (Input.GetAxis("Vertical") > 0)
                         {
@@ -87,11 +83,6 @@ public class movement : MonoBehaviour
                             //transform.position += new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")* Mathf.Lerp(10f, 20f, 1f), 0) * Time.deltaTime ;
                             gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.up * jetPackVelocity;
                             Debug.Log("jetpack vertical");
-                        }
-                        else
-                        {
-                            Debug.Log("vertical değil");
-                            //gameObject.transform.GetChild(2).gameObject.SetActive(false);
                         }
                         if (Input.GetAxis("Horizontal") > 0)
                         {
@@ -114,10 +105,12 @@ public class movement : MonoBehaviour
                         #if (UNITY_EDITOR)
                             if (Input.GetAxis("Horizontal") > 0)
                             {
+                                characterAnim.SetBool("isRun", true);
                                 transform.position += new Vector3(Input.GetAxis("Horizontal"), 0, 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
                             }
                             if (Input.GetAxis("Horizontal") < 0)
                             {
+
                                 transform.position += new Vector3(Input.GetAxis("Horizontal"), 0, 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
                             }
 
@@ -140,10 +133,12 @@ public class movement : MonoBehaviour
                         #endif
                             if (left)
                             {
+                                characterAnim.SetBool("isRun", true);
                                 transform.position += new Vector3(-1, 0, 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
                             }
                             if (right)
                             {
+                                characterAnim.SetBool("isRun", true);
                                 transform.position += new Vector3(1, 0, 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
                             }
                             if (up || down)
@@ -151,11 +146,13 @@ public class movement : MonoBehaviour
                                 GetComponent<Rigidbody2D>().gravityScale = 0;
                                 if (up)
                                 {
+                                    characterAnim.SetBool("isRun", true);
                                     ladderParent.isTrigger = true;
                                     transform.position += new Vector3(0, 1f, 0) * Time.deltaTime * ladderSpeed;
                                 }
                                 if (down)
                                 {
+                                    characterAnim.SetBool("isRun", true);
                                     ladderParent.isTrigger = true;
                                     transform.position -= new Vector3(0, 1f, 0) * Time.deltaTime * ladderSpeed;
                                 }
@@ -167,36 +164,54 @@ public class movement : MonoBehaviour
                         {
                             if (left)
                             {
-                                Debug.Log("left");
-                                transform.position += new Vector3(-1, 0, 0).normalized * Mathf.Lerp(0, 26, .3f * Time.deltaTime);//* Mathf.Lerp(0, 7000, 0.001f)
+                                characterAnim.SetBool("isRun", true);
+                                transform.position += new Vector3(-1.5f, 0, 0).normalized * Mathf.Lerp(0, 26, .3f * Time.deltaTime);//* Mathf.Lerp(0, 7000, 0.001f)
                             }
-                            if (right)
+                            else if (right)
                             {
-                                Debug.Log("right");
-                                transform.position += new Vector3(1, 0, 0).normalized * Mathf.Lerp(0, 26, .3f * Time.deltaTime);// * Mathf.Lerp(0, 7000, 0.001f)
+                                characterAnim.SetBool("isRun", true);
+                                transform.position += new Vector3(1.5f, 0, 0).normalized * Mathf.Lerp(0, 26, .3f * Time.deltaTime);// * Mathf.Lerp(0, 7000, 0.001f)
+                            }
+                            else
+                            {
+                                characterAnim.SetBool("isRun", false);
                             }
                             if (up)
                             {
-                                Debug.Log("up");
-                                transform.position += new Vector3(0, 1, 0).normalized * Mathf.Lerp(0, 14, 0.8f * Time.deltaTime);
+                                characterAnim.SetBool("isJump", true);
+                                transform.position += new Vector3(0, 1.5f, 0).normalized * Mathf.Lerp(0, 14, 0.8f * Time.deltaTime);
                             }
                             
                             GetComponent<Rigidbody2D>().gravityScale = 2;
                             #if (UNITY_EDITOR)
+
                                 if (Input.GetAxis("Vertical") > 0)
                                 {
+                                    characterAnim.SetBool("isJump", true);
                                     transform.position += new Vector3(0, Input.GetAxis("Vertical"), 0).normalized * Mathf.Lerp(0, 14, 0.8f * Time.deltaTime);
-                                    // StartCoroutine("VerticalTime");
+                                // StartCoroutine("VerticalTime");
+                                }
+                                else
+                                {
+                                    characterAnim.SetBool("isJump", false);
                                 }
                                 if (Input.GetAxis("Horizontal") > 0)
                                 {
+                                    characterAnim.SetBool("isRun", true);
                                     transform.position += new Vector3(Input.GetAxis("Horizontal"), 0, 0).normalized * Mathf.Lerp(0, 26, .3f * Time.deltaTime);// * Mathf.Lerp(0, 7000, 0.001f)
                                 }
-                                if (Input.GetAxis("Horizontal") < 0)
+                                else if (Input.GetAxis("Horizontal") < 0)
                                 {
+                                    characterAnim.SetBool("isRun", true);
+                                   // this.transform.rotation = Quaternion.Euler(0,-180,0);
                                     transform.position += new Vector3(Input.GetAxis("Horizontal"), 0, 0).normalized * Mathf.Lerp(0, 26, .3f * Time.deltaTime);//* Mathf.Lerp(0, 7000, 0.001f)
                                 }
-                            #endif
+                                else
+                                {
+                                    characterAnim.SetBool("isRun", false);
+                            }
+
+                                #endif
                         }
 
                     }
@@ -381,8 +396,8 @@ public class movement : MonoBehaviour
     {
         jetPack = false;
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 2f;
-        gameObject.transform.GetChild(1).gameObject.SetActive(false);
-        gameObject.transform.GetChild(1).SetParent(gameObject.transform.parent);
+        gameObject.transform.GetChild(2).gameObject.SetActive(false);
+        gameObject.transform.GetChild(2).SetParent(gameObject.transform.parent);
     }
 
     IEnumerator JetPackCountdown()
