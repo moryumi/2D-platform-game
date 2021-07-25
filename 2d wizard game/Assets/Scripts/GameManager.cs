@@ -40,12 +40,7 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
-        values = new float[100];
-        Random.seed = 30;
-        for (int i = 0; i < values.Length; i++)
-        {
-            values[i] = Random.RandomRange(spawnPoint.transform.position.x - 3, spawnPoint.transform.position.x + 4);
-        }
+        
         Time.timeScale = 1;
         potionPickCount = 0;
 
@@ -64,6 +59,13 @@ public class GameManager : MonoBehaviour
 
         if (UIManager.Instance.CurrentLevel == 1)
         {
+            values = new float[100];
+            Random.seed = 30;
+            for (int i = 0; i < values.Length; i++)
+            {
+                values[i] = Random.RandomRange(spawnPoint.transform.position.x - 3, spawnPoint.transform.position.x + 4);
+            }
+
             for (int i = 0; i < poolNum; i++)
             {
                 Debug.Log("poolnum");

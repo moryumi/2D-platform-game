@@ -539,6 +539,11 @@ public class movement : MonoBehaviour
         down = false;
     }
     
+    public void isIdle()
+    {
+        characterAnim.SetBool("isRun", false);
+        characterAnim.SetBool("isJump", false);
+    }
 
     //IEnumerator VerticalTime()
     //{
@@ -548,10 +553,5 @@ public class movement : MonoBehaviour
     //    verticalStart = true;
     //}
 
-    public void isIdle()
-    {
-        characterAnim.SetBool("isRun", false);
-        characterAnim.SetBool("isJump", false);
-    }
 
 }
