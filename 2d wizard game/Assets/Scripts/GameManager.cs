@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject spawnPoint;
     [SerializeField]
-    private int poolNum;
+    private int poolNum, lastRandomNumber;
     [SerializeField]
     private float doorWaitTime;
     public List<GameObject> rainDropList;
@@ -25,20 +25,27 @@ public class GameManager : MonoBehaviour
     public List<GameObject> potionListGameObject;
     public List<GameObject> buttonList;
     public Sprite fullPotion;
-    private int potionPickCount;
-    private bool ok;
+    private int potionPickCount, rainLoopCount = 0;
+    private bool ok, stopOnce = true;
+    public bool StopOnce { get { return this.stopOnce; }  set { stopOnce = value; } }
+    public float[] values;
+    public List<GameObject> readyRainDropList;
 
     private void Awake()
     {
       
         gameOverPanel = uıPanel.transform.GetChild(0).gameObject;
         settingsPanel = uıPanel.transform.GetChild(1).gameObject;
+       
     }
     void Start()
     {
-        DoorClosed();
-        UnHidePotionImage();
-        UnHideInputButton();
+        values = new float[100];
+        Random.seed = 30;
+        for (int i = 0; i < values.Length; i++)
+        {
+            values[i] = Random.RandomRange(spawnPoint.transform.position.x - 3, spawnPoint.transform.position.x + 4);
+        }
         Time.timeScale = 1;
         potionPickCount = 0;
 
@@ -46,19 +53,21 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
         }
-       
+        DoorClosed();
+        UnHidePotionImage();
+        UnHideInputButton();
         rainDropList.Add(rainDrop);
         //uıPanel.gameObject.SetActive(false);
         //gameOverPanel.SetActive(false);
         //settingsPanel.SetActive(false);
         startButton.onClick.AddListener(StartAgainButton);
 
-        if (UIManager.Instance.CurrentLevel==1)
+        if (UIManager.Instance.CurrentLevel == 1)
         {
             for (int i = 0; i < poolNum; i++)
             {
                 Debug.Log("poolnum");
-                var currentRainDrop = Instantiate(rainDrop, new Vector3(Random.RandomRange(spawnPoint.transform.position.x - 2.5f, spawnPoint.transform.position.x + 2.5f), spawnPoint.transform.position.y), rainDrop.transform.rotation);
+                var currentRainDrop = Instantiate(rainDrop, new Vector3(RndNum(), spawnPoint.transform.position.y,transform.position.z), rainDrop.transform.rotation);//Instantiate(rainDrop, new Vector3(Random.RandomRange(spawnPoint.transform.position.x - 2.5f, spawnPoint.transform.position.x + 2.5f), spawnPoint.transform.position.y), rainDrop.transform.rotation);
                 currentRainDrop.SetActive(false);
                 currentRainDrop.transform.parent = rainDrop.transform.parent;
                 rainDropList.Add(currentRainDrop);
@@ -68,9 +77,8 @@ public class GameManager : MonoBehaviour
             {
                 Debug.Log("rigidbody");
                 var currentRainDrop = rainDropList[i];
-                currentRainDrop.GetComponent<Rigidbody2D>().gravityScale = Random.RandomRange(0.1f, 2);
+                currentRainDrop.GetComponent<Rigidbody2D>().gravityScale = Random.RandomRange(0.1f, 1.2f);
                 currentRainDrop.SetActive(false);
-
             }
         }
     }
@@ -82,6 +90,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+//        Debug.Log("pos y"+spawnPoint.transform.position.y);
         //if (PlayerPrefs.HasKey("pref"))
         //{
         //    PlayerPrefs.SetInt("pref", UIManager.Instance.CurrentLevel);
@@ -202,28 +211,60 @@ public class GameManager : MonoBehaviour
 
     public void RainStart()
     {
+        
         //Debug.Log("rainstart");
-        rainZone.SetActive(true);
+        //rainZone.SetActive(true);
         GameObject rain_ = GetRainDrop();
-        if (rain_!=null)
+        if (rain_ != null)
         {
-            rain_.transform.position = new Vector3(Random.RandomRange(spawnPoint.transform.position.x - 2.5f, spawnPoint.transform.position.x + 2.5f), spawnPoint.transform.position.y);
+            rain_.transform.position = new Vector3( RndNum(), spawnPoint.transform.position.y,transform.position.z); //new Vector3(Random.RandomRange(spawnPoint.transform.position.x - 2.5f, spawnPoint.transform.position.x + 2.5f), spawnPoint.transform.position.y);
             rain_.SetActive(true);
+        }
+        else
+        {
+            rain_ = GetRainDrop();
+        }
+    }
+
+    public float RndNum()
+    {
+        //int seed = System.DateTime.Now.Millisecond;
+        //System.Random rnd = new System.Random(seed);
+        // int rand=rnd.Next((int)spawnPoint.transform.position.x - 2, (int)spawnPoint.transform.position.x + 5);
+        //Debug.Log("rand " + rand);
+        //Debug.Log("seed");
+        float rand = values[Random.Range(0,values.Length)];
+        Debug.Log("rand"+rand);
+        return rand;
+       
+    }
+    public void RainStop()
+    {
+        //Debug.Log("stop rain");
+        if (UIManager.Instance.CurrentLevel == 1)
+        {
+            for (int i = 0; i < rainDropList.Count; i++)
+            {
+                var currentRainDrop = rainDropList[i];
+                currentRainDrop.GetComponent<Rigidbody2D>().gravityScale = Random.RandomRange(0.1f, 1.2f);
+                currentRainDrop.SetActive(false);
+            }
         }
     }
 
     public GameObject GetRainDrop()
     {
+        GameObject returnValue=null;
         for (int i = 0; i < rainDropList.Count; i++)
         {
-            Debug.Log("current drop");
             var currentLevel = rainDropList[i];
             if (!currentLevel.activeInHierarchy)
             {
-                return currentLevel;
+                returnValue = currentLevel;
             }
         }
-        return null;
+        return returnValue;
+        
     }
 
     public void ExitRain()
@@ -234,6 +275,8 @@ public class GameManager : MonoBehaviour
             current.SetActive(false);
         }
     }
+    
+
 
     public void CheckPotionCount()
     {

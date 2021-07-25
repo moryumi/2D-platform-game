@@ -8,8 +8,8 @@ public class movement : MonoBehaviour
     public FixedJoystick fj;
     public Rigidbody2D rb;
     private PolygonCollider2D boxCollider;
-    private bool collideWithGround;
-    private bool dead, finish, enemyActive, jetPack, fanActive,onLadder,doorOpen,verticalStart,left,right,up,down;
+    private bool collideWithGround, dropsLoopReady = true;
+    private bool dead, finish, enemyActive, jetPack, fanActive,onLadder,doorOpen,verticalStart,left,right,up,down, horiz_pos,horiz_neg;
     public bool Dead { get { return this.dead; } private set { } }
     public bool DoorOpen { get { return this.doorOpen; } set { this.doorOpen = value; } }
     public Camera gameCamera;
@@ -26,13 +26,16 @@ public class movement : MonoBehaviour
     public GameObject port_A2;
     public GameObject port_B2;
     private RaycastHit2D raycastUp,raycastDown;
-    public float distance, ladderSpeed;
+    public float distance, ladderSpeed,runTime,waitTime;
+    private int rainDropCollision=0;
     public LayerMask ladderLayer;
     public BoxCollider2D ladderParent;
 
     void Start()
     {
-       // verticalStart = true;
+        // verticalStart = true;
+        horiz_pos = true;
+        horiz_neg = false;
         doorOpen = false;
         jetPack = false;
         fanActive = false;
@@ -49,6 +52,7 @@ public class movement : MonoBehaviour
 
     void Update()
     {
+        //Debug.Log("loop"+ dropsLoopReady);
         // hey2=GameManager.Instance.Hey;
         // Debug.Log("jetpack "+jetPack);
         // Debug.Log(transform.position);
@@ -61,6 +65,7 @@ public class movement : MonoBehaviour
             {
                 if (jetPack)
                 {
+                    isIdle();
                     if (up)
                     {
                         gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.up * jetPackVelocity;
@@ -102,7 +107,10 @@ public class movement : MonoBehaviour
                         //Debug.Log("movement");
                         if (onLadder)
                         {
-                        #if (UNITY_EDITOR)
+                            isIdle();
+                            GetComponent<Rigidbody2D>().gravityScale = 0;
+                            GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+                            #if (UNITY_EDITOR)
                             if (Input.GetAxis("Horizontal") > 0)
                             {
                                 characterAnim.SetBool("isRun", true);
@@ -110,13 +118,14 @@ public class movement : MonoBehaviour
                             }
                             if (Input.GetAxis("Horizontal") < 0)
                             {
-
+                                characterAnim.SetBool("isRun", true);
                                 transform.position += new Vector3(Input.GetAxis("Horizontal"), 0, 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
                             }
 
                             if (Input.GetAxis("Vertical") > 0 || Input.GetAxis("Vertical") < 0)
                             {
-                                Debug.Log("onLadder");
+                                
+                               // Debug.Log("onLadder");
                                 GetComponent<Rigidbody2D>().gravityScale = 0;
                                 if (Input.GetAxis("Vertical") > 0)
                                 {
@@ -130,47 +139,59 @@ public class movement : MonoBehaviour
                                 }
 
                             }
-                        #endif
+                            #endif
+                            
+                            if (right)
+                            {
+                                characterAnim.SetBool("isRun", true);
+                                transform.position += new Vector3(1, 0, 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
+                              
+                            }
                             if (left)
                             {
                                 characterAnim.SetBool("isRun", true);
                                 transform.position += new Vector3(-1, 0, 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
                             }
-                            if (right)
-                            {
-                                characterAnim.SetBool("isRun", true);
-                                transform.position += new Vector3(1, 0, 0) * Time.deltaTime * Mathf.Lerp(0, 7000, 0.001f);
-                            }
                             if (up || down)
                             {
+                                isIdle();
                                 GetComponent<Rigidbody2D>().gravityScale = 0;
                                 if (up)
                                 {
-                                    characterAnim.SetBool("isRun", true);
                                     ladderParent.isTrigger = true;
                                     transform.position += new Vector3(0, 1f, 0) * Time.deltaTime * ladderSpeed;
                                 }
                                 if (down)
                                 {
-                                    characterAnim.SetBool("isRun", true);
                                     ladderParent.isTrigger = true;
                                     transform.position -= new Vector3(0, 1f, 0) * Time.deltaTime * ladderSpeed;
                                 }
-
-                            }
-                            
+                            }  
                         }
                         else
                         {
-                            if (left)
+                            if (right)
                             {
-                                characterAnim.SetBool("isRun", true);
-                                transform.position += new Vector3(-1.5f, 0, 0).normalized * Mathf.Lerp(0, 26, .3f * Time.deltaTime);//* Mathf.Lerp(0, 7000, 0.001f)
-                            }
-                            else if (right)
-                            {
+                                if (horiz_neg)
+                                {
+                                    //Debug.Log("sağa çevir");
+                                    transform.Rotate(new Vector3(0, 180, 0), Space.World);
+                                }
                                 characterAnim.SetBool("isRun", true);
                                 transform.position += new Vector3(1.5f, 0, 0).normalized * Mathf.Lerp(0, 26, .3f * Time.deltaTime);// * Mathf.Lerp(0, 7000, 0.001f)
+                                horiz_pos = true;
+                                horiz_neg = false;
+                            }else if (left)
+                            {
+                                if (horiz_pos)
+                                {
+                                    //Debug.Log("sola çevir");
+                                    transform.Rotate(new Vector3(0, -180, 0), Space.World);
+                                }
+                                characterAnim.SetBool("isRun", true);
+                                transform.position += new Vector3(-1.5f, 0, 0).normalized * Mathf.Lerp(0, 26, .3f * Time.deltaTime);//* Mathf.Lerp(0, 7000, 0.001f)
+                                horiz_neg = true;
+                                horiz_pos = false;
                             }
                             else
                             {
@@ -197,14 +218,29 @@ public class movement : MonoBehaviour
                                 }
                                 if (Input.GetAxis("Horizontal") > 0)
                                 {
+                                    if (horiz_neg)
+                                    {
+                                        // Debug.Log("sağa çevir");
+                                         transform.Rotate(new Vector3(0, 180, 0), Space.World);
+                                    }
                                     characterAnim.SetBool("isRun", true);
                                     transform.position += new Vector3(Input.GetAxis("Horizontal"), 0, 0).normalized * Mathf.Lerp(0, 26, .3f * Time.deltaTime);// * Mathf.Lerp(0, 7000, 0.001f)
+                                    horiz_pos = true;
+                                    horiz_neg = false;
                                 }
                                 else if (Input.GetAxis("Horizontal") < 0)
                                 {
+                                    if (horiz_pos)
+                                    {
+                                        //Debug.Log("sola çevir");
+                                        transform.Rotate(new Vector3(0, -180, 0), Space.World);
+                                    }
+                                    //transform.Rotate(new Vector3(0, -180, 0), Space.World);
                                     characterAnim.SetBool("isRun", true);
                                    // this.transform.rotation = Quaternion.Euler(0,-180,0);
                                     transform.position += new Vector3(Input.GetAxis("Horizontal"), 0, 0).normalized * Mathf.Lerp(0, 26, .3f * Time.deltaTime);//* Mathf.Lerp(0, 7000, 0.001f)
+                                    horiz_neg = true;
+                                    horiz_pos = false;
                                 }
                                 else
                                 {
@@ -267,11 +303,18 @@ public class movement : MonoBehaviour
         else if (collision.gameObject.tag == "jetpack")
         {
             jetPack = true;
+            if (horiz_neg)
+            {
+                transform.Rotate(new Vector3(0, 180, 0), Space.World);
+                horiz_neg = false;
+                horiz_pos = true;
+            }
             StartCoroutine("JetPackCountdown");
             gameObject.GetComponent<Rigidbody2D>().gravityScale = 0.6f;
             collision.transform.GetComponent<PolygonCollider2D>().enabled = false;
             collision.transform.SetParent(gameObject.transform);
             collision.transform.localPosition = Vector3.zero;
+            
         }
         else if (collision.gameObject.tag == "enemy")
         {
@@ -307,9 +350,13 @@ public class movement : MonoBehaviour
     {
         if (collision.gameObject.tag == "rain_drop")
         {
-            dead = true;
-            GameManager.Instance.GameOver();
-            GameOverForce();
+            if (rainDropCollision==0)
+            {
+                dead = true;
+                GameManager.Instance.GameOver();
+                GameOverForce();
+            }
+            rainDropCollision++;
         }
         else if (collision.gameObject.tag == "potion")
         {
@@ -333,6 +380,7 @@ public class movement : MonoBehaviour
         {
             onLadder = true;
             ladderParent = collision.transform.parent.GetComponent<BoxCollider2D>();
+            Debug.Log("onladddr");
            //collision.transform.parent.GetComponent<BoxCollider2D>().isTrigger = true;
         }
         else if (collision.gameObject.tag == "door")
@@ -345,13 +393,25 @@ public class movement : MonoBehaviour
                 GameManager.Instance.FinishLevel();
             }
         }
+      
     }
 
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "rain")
         {
-            GameManager.Instance.RainStart();
+            GameManager.Instance.rainZone.SetActive(true);
+            if (dropsLoopReady)
+            {
+                StopCoroutine("CheckStop");
+                StartCoroutine("CheckRun");
+                GameManager.Instance.RainStart();
+            }
+            else
+            {   StopCoroutine("CheckRun");
+                StartCoroutine("CheckStop");
+                GameManager.Instance.RainStop();
+            }
         }
         else if (collision.gameObject.tag == "enemy_zone")
         {
@@ -359,7 +419,29 @@ public class movement : MonoBehaviour
             enemy.FollowCharacter();
             enemy.AnimationPlay();
         }
+        else if (collision.gameObject.tag == "ladder")
+        {
+            onLadder = true;
+            ladderParent = collision.transform.parent.GetComponent<BoxCollider2D>();
+            Debug.Log("onladddr");
+            //collision.transform.parent.GetComponent<BoxCollider2D>().isTrigger = true;
+        }
     }
+
+    
+
+   IEnumerator CheckRun()
+    {
+        yield return new WaitForSeconds(runTime);
+        dropsLoopReady = false;
+    }
+
+    IEnumerator CheckStop()
+    {
+        yield return new WaitForSeconds(waitTime);
+        dropsLoopReady = true;
+    }
+
 
     private void OnTriggerExit2D(Collider2D collision)
     {
@@ -395,7 +477,7 @@ public class movement : MonoBehaviour
     public void jetPackClosed()
     {
         jetPack = false;
-        gameObject.GetComponent<Rigidbody2D>().gravityScale = 2f;
+        GetComponent<Rigidbody2D>().gravityScale = 2;
         gameObject.transform.GetChild(2).gameObject.SetActive(false);
         gameObject.transform.GetChild(2).SetParent(gameObject.transform.parent);
     }
@@ -413,13 +495,22 @@ public class movement : MonoBehaviour
     
     public void Left()
     {
-        
+        if (left)
+        {
+            
+        }
+       //transform.Rotate(new Vector3(0, -180, 0), Space.World);
         left = true;
         right = false;
     }
 
     public void Right()
     {
+        if (right)
+        {
+            
+        }
+       //transform.Rotate(new Vector3(0, 180, 0), Space.World);
         right = true;
         left = false;
     }
@@ -456,4 +547,11 @@ public class movement : MonoBehaviour
     //    yield return new WaitForSeconds(.5f);
     //    verticalStart = true;
     //}
+
+    public void isIdle()
+    {
+        characterAnim.SetBool("isRun", false);
+        characterAnim.SetBool("isJump", false);
+    }
+
 }
