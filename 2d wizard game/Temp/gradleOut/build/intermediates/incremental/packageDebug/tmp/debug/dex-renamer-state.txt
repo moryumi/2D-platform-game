@@ -1,0 +1,4 @@
+#Sun Aug 01 20:57:03 EET 2021
+base.0=/Users/iremisik/Documents/GitHub/2D-platform-game/2d wizard game/Temp/gradleOut/build/intermediates/transforms/dexMerger/debug/0
+path.0=classes.dex
+renamed.0=classes.dex
